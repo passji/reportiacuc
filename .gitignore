@@ -1,0 +1,8 @@
+/.env
+/vendor
+/runtime
+/web/assets
+/uploads
+/yii.bat
+/config/codeception-local.php
+.php-cs-fixer.cache

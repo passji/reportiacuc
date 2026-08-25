@@ -1,0 +1,68 @@
+services:
+  app:
+    build: ./docker/php
+    ports:
+      - "8580:80"
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    environment:
+      - DB_DSN=mysql:host=db;dbname=research_report;charset=utf8mb4
+      - DB_USER=report_app
+      - DB_PASS=${DB_PASS}
+      - SSO_APP_ID=${SSO_APP_ID:-}
+      - SSO_CLIENT_ID=${SSO_CLIENT_ID:-}
+      - SSO_CLIENT_SECRET=${SSO_CLIENT_SECRET:-}
+      - SSO_REDIRECT_URL=${SSO_REDIRECT_URL:-}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL:-}
+      - MAILER_HOST=${MAILER_HOST:-}
+      - MAILER_USER=${MAILER_USER:-}
+      - MAILER_PASS=${MAILER_PASS:-}
+      - MAILER_PORT=${MAILER_PORT:-587}
+    labels:
+      # scheduler (ofelia) ด้านล่างเรียก php yii reminder/send-scheduled ให้เองตามตาราง — ไม่ต้องมีคนสั่ง
+      # รันเอง คือตัว automation จริงของ "รอบการส่งรายงาน" ที่ตั้งไว้ที่ admin/notification-settings
+      # ทดสอบแล้วว่า ofelia ยิงคำสั่งอัตโนมัติได้จริง (ดู README) — ตั้ง schedule ตรงกับ crontab รายวัน
+      # ที่ README แนะนำ (ทุกวัน 9 โมง)
+      ofelia.enabled: "true"
+      ofelia.job-exec.reminder-send-scheduled.schedule: "0 9 * * *"
+      ofelia.job-exec.reminder-send-scheduled.command: "php /app/yii reminder/send-scheduled"
+
+  scheduler:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - app
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  db:
+    image: mariadb:11
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=research_report
+      - MARIADB_USER=report_app
+      - MARIADB_PASSWORD=${DB_PASS}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASS}
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=db
+    ports:
+      - "8581:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+
+# หมายเหตุ: networks นี้เป็นค่า default ของ Compose สำหรับ dev ในเครื่อง
+# ตอน deploy จริงตาม README ให้เปลี่ยนเป็น proxy_net / db_net (external: true)
+# เพื่อเข้ากับ reverse proxy ที่มีอยู่แล้วบน host

@@ -503,20 +503,19 @@ a.desc:after {
     border-radius: 2px;
 }
 
-/* sidebar brand: ชื่อระบบเต็มยาวกว่าที่ SB Admin 2 ออกแบบไว้ (เดิม height คงที่ 4.375rem + ตัดคำเป็น
-   บรรทัดเดียว uppercase) override ให้สูงได้ตามเนื้อหา ตัดคำได้ปกติ ลดขนาดตัวอักษร/letter-spacing/
-   text-transform ลง ไม่งั้นข้อความจะโดน clip หรือล้นกล่อง */
-.sidebar .sidebar-brand {
+/* topbar: ชื่อระบบเต็ม (navbar-system-name) ยาวกว่าความสูงคงที่เดิมของ .topbar (4.375rem บรรทัด
+   เดียว) จะรองรับได้ — ยืดสูงตามเนื้อหาแทน ซ่อนบนจอเล็ก (d-none d-md-inline ใน _topbar.php) กัน
+   navbar มือถือแคบเกินไปเพราะข้อความยาวเบียดปุ่ม/dropdown ด้านขวา */
+.topbar {
     height: auto;
     min-height: 4.375rem;
-    padding: 1rem .75rem;
-    text-transform: none;
-    letter-spacing: normal;
+    flex-wrap: wrap;
+    row-gap: .5rem;
 }
 
-.sidebar .sidebar-brand .sidebar-brand-text {
-    font-size: .8125rem;
-    font-weight: 700;
-    line-height: 1.35;
-    white-space: normal;
+.navbar-system-name {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    padding: 0 0 0 20px;
+    max-width: 60%;
 }

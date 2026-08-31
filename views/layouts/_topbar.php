@@ -15,6 +15,10 @@ $sessionEmail = (string) Yii::$app->session->get('sso_email', '');
         <i class="fa fa-bars"></i>
     </button>
 
+    <span class="navbar-system-name d-none d-md-inline fw-semibold text-gray-800">
+        <?= Html::encode(Yii::$app->params['systemFullName']) ?>
+    </span>
+
     <ul class="navbar-nav ms-auto align-items-center">
 
         <li class="nav-item">

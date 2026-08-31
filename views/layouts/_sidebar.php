@@ -32,10 +32,6 @@ $infoItems = [
     ['label' => 'About', 'icon' => 'fa-circle-info', 'url' => ['/site/about'], 'route' => 'site/about'],
 ];
 
-// ชื่อระบบเต็ม แยกจาก Yii::$app->name (footer ใช้ "progress.kku.ac.th" แทน ไม่ใช่ชื่อนี้) — ยาวเกิน
-// กว่าจะขึ้นบรรทัดเดียวในกล่อง brand ปกติของ SB Admin 2 ได้ ต้อง override CSS (.sidebar-brand ใน
-// site.css) ให้ยืดสูงขึ้น/ตัดคำได้แทนที่จะโดน clip ตามความสูงคงที่เดิม
-$systemFullName = 'ระบบรายงานความก้าวหน้าโครงการวิจัยที่ได้รับการรับรองจรรยาบรรณการดำเนินการต่อสัตว์เพื่องานทางวิทยาศาสตร์';
 ?>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -43,7 +39,7 @@ $systemFullName = 'ระบบรายงานความก้าวหน�
         <div class="sidebar-brand-icon">
             <i class="fas fa-notes-medical"></i>
         </div>
-        <div class="sidebar-brand-text mx-3"><?= Html::encode($systemFullName) ?></div>
+        <div class="sidebar-brand-text mx-3">IACUC</div>
     </a>
 
     <hr class="sidebar-divider my-0">

@@ -502,3 +502,21 @@ a.desc:after {
     flex: 0 0 auto;
     border-radius: 2px;
 }
+
+/* sidebar brand: ชื่อระบบเต็มยาวกว่าที่ SB Admin 2 ออกแบบไว้ (เดิม height คงที่ 4.375rem + ตัดคำเป็น
+   บรรทัดเดียว uppercase) override ให้สูงได้ตามเนื้อหา ตัดคำได้ปกติ ลดขนาดตัวอักษร/letter-spacing/
+   text-transform ลง ไม่งั้นข้อความจะโดน clip หรือล้นกล่อง */
+.sidebar .sidebar-brand {
+    height: auto;
+    min-height: 4.375rem;
+    padding: 1rem .75rem;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.sidebar .sidebar-brand .sidebar-brand-text {
+    font-size: .8125rem;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: normal;
+}

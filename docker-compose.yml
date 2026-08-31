@@ -3,8 +3,12 @@ services:
     build: ./docker/php
     ports:
       - "8580:80"
+      - "443:443"
     volumes:
       - ./:/app
+      # ใบรับรอง self-signed (สร้างเองบน server ด้วย openssl — ดู README หัวข้อ "HTTPS แบบ
+      # self-signed") mount ทับ path ที่ docker/php/default-ssl.conf อ้างถึง ไม่ commit เข้า git
+      - ./docker/php/ssl:/etc/apache2/ssl:ro
     depends_on:
       - db
     environment:

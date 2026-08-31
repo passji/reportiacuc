@@ -1,4 +1,5 @@
 /.env
+/docker/php/ssl
 /vendor
 /runtime
 /web/assets

@@ -379,14 +379,6 @@ a.desc:after {
     max-width: 520px;
 }
 
-.hero-logo {
-    height: 120px;
-    opacity: .45;
-    right: 2.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .hero-banner::before {
     content: '';
     position: absolute;
@@ -400,30 +392,6 @@ a.desc:after {
 }
 
 /* extension cards */
-.extension-card {
-    transition: transform .15s ease-in-out, box-shadow .15s ease-in-out;
-}
-
-.extension-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .12) !important;
-}
-
-.extension-icon {
-    font-size: 1.5rem;
-    line-height: 1;
-}
-
-/* dark mode: extension cards */
-[data-bs-theme="dark"] .extension-card {
-    background-color: var(--bs-body-bg);
-    box-shadow: 0 0 0 1px var(--bs-border-color), 0 2px 8px rgba(0, 0, 0, .3);
-}
-
-[data-bs-theme="dark"] .extension-card:hover {
-    box-shadow: 0 0 0 1px var(--bs-border-color), 0 8px 24px rgba(0, 0, 0, .4) !important;
-}
-
 /* hover สีเขียวอ่อนบนทุกแถวของทุกตารางในระบบ (ไม่ต้องใส่ class .table-hover ทีละหน้า) — ใช้กลไก
    ตัวแปร CSS เดียวกับที่ Bootstrap 5.3 ใช้กับ .table-hover เอง (--bs-table-bg-state ผ่าน inset
    box-shadow) แค่ผูกกับ .table เฉย ๆ แทนที่จะต้องมี .table-hover ถึงจะทำงาน — ใช้ rgba โปร่งแสงจึง

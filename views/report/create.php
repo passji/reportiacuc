@@ -50,12 +50,21 @@ $statusOptions = [
 ];
 $yesNo = ['yes' => 'ใช่', 'no' => 'ไม่ใช่'];
 
+// เติม ?v=<เวลาแก้ไขไฟล์ล่าสุด> ต่อท้าย URL ของไฟล์ JS/CSS ของโปรเจกต์เอง (ไม่ใช่ vendor) กัน
+// browser/reverse-proxy บนเซิร์ฟเวอร์แคชไฟล์เก่าค้างไว้หลัง deploy โค้ดใหม่ — ก่อนหน้านี้ registerJsFile
+// ใช้ path ตรงๆ ไม่มี query string เลย ทำให้ browser ที่เคยโหลดหน้านี้ไปแล้วไม่รู้ว่าไฟล์เปลี่ยน
+// (นี่คือสาเหตุที่ทำให้ผู้ใช้บนเซิร์ฟเวอร์เห็นเลข 6.1.1/6.2.1 ไม่เพิ่มขึ้นทั้งที่โค้ดฝั่งเซิร์ฟเวอร์อัปเดตแล้ว)
+$assetVersion = static function (string $relativePath): string {
+    $path = Yii::getAlias('@webroot/' . ltrim($relativePath, '/'));
+    return is_file($path) ? ('?v=' . filemtime($path)) : '';
+};
+
 $this->registerCssFile('@web/css/vendor/flatpickr.min.css');
-$this->registerJsFile('@web/js/report-form.js', ['depends' => [\yii\web\JqueryAsset::class]]);
-$this->registerJsFile('@web/js/dynamic-rows.js');
-$this->registerJsFile('@web/js/animal-usage-warning.js');
+$this->registerJsFile('@web/js/report-form.js' . $assetVersion('js/report-form.js'), ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/dynamic-rows.js' . $assetVersion('js/dynamic-rows.js'));
+$this->registerJsFile('@web/js/animal-usage-warning.js' . $assetVersion('js/animal-usage-warning.js'));
 $this->registerJsFile('@web/js/vendor/flatpickr.min.js');
-$this->registerJsFile('@web/js/thai-date-input.js');
+$this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date-input.js'));
 ?>
 <div class="report-create">
     <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>

@@ -300,7 +300,8 @@ class ReportController extends SecureController
                     }
 
                     $transaction->commit();
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    Yii::$app->session->setFlash('success', 'บันทึกรายงานความก้าวหน้าเรียบร้อยแล้ว');
+                    return $this->redirect(['my-reports']);
                 } catch (\Throwable $e) {
                     $transaction->rollBack();
                     Yii::error((string) $e, __METHOD__);

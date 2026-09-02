@@ -19,6 +19,26 @@ class ReminderService
     public const PENDING_STATUSES = ['not_started', 'in_progress'];
 
     /**
+     * ตอนทดสอบระบบก่อนขึ้นจริง ไม่อยากให้อีเมลแจ้งเตือน/ข่าวสาร/ปฏิเสธรายงานหลุดไปหาโครงการจริงโดย
+     * บังเอิญ — ถ้าตั้ง MAILER_TEST_OVERRIDE_TO ไว้ใน .env (เช่น passji@kku.ac.th) ทุกอีเมลที่ควรจะส่ง
+     * "ถึงโครงการ" จะถูกส่งไปที่อีเมลนี้แทนทั้งหมด โดย subject จะขึ้นต้นด้วยผู้รับตัวจริงไว้ให้เห็นว่า
+     * "เดิมตั้งใจจะส่งถึงใคร" — ส่วน report_notifications (ประวัติการแจ้งเตือน) ยังบันทึกอีเมลผู้รับจริง
+     * ไว้เหมือนเดิม ไม่ได้ถูกเปลี่ยนตาม override นี้ (override มีผลแค่ตอนส่งจริงผ่าน SMTP เท่านั้น)
+     * ปล่อยว่างไว้ (ค่า default) = ส่งถึงอีเมลจริงตามปกติ ไม่มีผลอะไร
+     *
+     * @return array{0: string, 1: string} [$actualTo, $actualSubject]
+     */
+    private static function applyTestOverride(string $realTo, string $subject): array
+    {
+        $override = trim((string) getenv('MAILER_TEST_OVERRIDE_TO'));
+        if ($override === '') {
+            return [$realTo, $subject];
+        }
+
+        return [$override, "[ทดสอบ — เดิมจะส่งถึง {$realTo}] {$subject}"];
+    }
+
+    /**
      * โครงการที่ "รอเตือน" — พิจารณาจากสถานะของ "รายงานฉบับล่าสุด" ของแต่ละ oid เท่านั้น (ไม่ใช่
      * เคยมีรายงานสถานะปิดจ๊อบในอดีตหรือไม่ — โครงการที่เคยปิดจ๊อบไปแล้วแต่รายงานฉบับล่าสุดกลับมาเป็น
      * "ยังไม่เริ่มโครงการ"/"อยู่ระหว่างดำเนินการ" ต้องนับเป็นรอเตือนด้วย) รวมถึงโครงการที่ยังไม่เคย
@@ -63,13 +83,14 @@ class ReminderService
         $subject = $subject ?: ('แจ้งเตือน: กรุณารายงานความก้าวหน้าโครงการวิจัย ' . $project->oid);
 
         try {
+            [$mailTo, $mailSubject] = self::applyTestOverride((string) $project->s_email, $subject);
             $sent = Yii::$app->mailer->compose(['html' => 'reminder'], [
                 'project' => $project,
                 'deadlineDate' => $deadlineDate,
                 'extraNote' => $extraNote,
             ])
-                ->setTo($project->s_email)
-                ->setSubject($subject)
+                ->setTo($mailTo)
+                ->setSubject($mailSubject)
                 ->send();
             if (!$sent) {
                 $status = 'failed';
@@ -191,13 +212,14 @@ class ReminderService
             $error = null;
 
             try {
+                [$mailTo, $mailSubject] = self::applyTestOverride((string) $project->s_email, $subject);
                 $sent = Yii::$app->mailer->compose(['html' => 'announcement'], [
                     'project' => $project,
                     'subject' => $subject,
                     'body' => $body,
                 ])
-                    ->setTo($project->s_email)
-                    ->setSubject($subject)
+                    ->setTo($mailTo)
+                    ->setSubject($mailSubject)
                     ->send();
                 if (!$sent) {
                     $status = 'failed';
@@ -240,12 +262,13 @@ class ReminderService
         $subject = 'รายงานความก้าวหน้าโครงการวิจัยถูกปฏิเสธ กรุณาส่งข้อมูลใหม่ ' . $report->oid;
 
         try {
+            [$mailTo, $mailSubject] = self::applyTestOverride((string) $report->submitted_by_email, $subject);
             $sent = Yii::$app->mailer->compose(['html' => 'report-rejected'], [
                 'report' => $report,
                 'reason' => $reason,
             ])
-                ->setTo($report->submitted_by_email)
-                ->setSubject($subject)
+                ->setTo($mailTo)
+                ->setSubject($mailSubject)
                 ->send();
             if (!$sent) {
                 $status = 'failed';

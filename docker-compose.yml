@@ -15,6 +15,7 @@ services:
       - DB_DSN=mysql:host=db;dbname=research_report;charset=utf8mb4
       - DB_USER=report_app
       - DB_PASS=${DB_PASS}
+      - APP_BASE_URL=${APP_BASE_URL:-}
       - SSO_APP_ID=${SSO_APP_ID:-}
       - SSO_CLIENT_ID=${SSO_CLIENT_ID:-}
       - SSO_CLIENT_SECRET=${SSO_CLIENT_SECRET:-}
@@ -26,6 +27,7 @@ services:
       - MAILER_USER=${MAILER_USER:-}
       - MAILER_PASS=${MAILER_PASS:-}
       - MAILER_PORT=${MAILER_PORT:-587}
+      - MAILER_TEST_OVERRIDE_TO=${MAILER_TEST_OVERRIDE_TO:-}
     labels:
       # scheduler (ofelia) ด้านล่างเรียก php yii reminder/send-scheduled ให้เองตามตาราง — ไม่ต้องมีคนสั่ง
       # รันเอง คือตัว automation จริงของ "รอบการส่งรายงาน" ที่ตั้งไว้ที่ admin/notification-settings

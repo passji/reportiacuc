@@ -57,6 +57,11 @@ class ReportPublication extends ActiveRecord
         return $this->hasOne(ProgressReport::class, ['id' => 'report_id']);
     }
 
+    public function getAttachment()
+    {
+        return $this->hasOne(ReportAttachment::class, ['publication_id' => 'id']);
+    }
+
     /**
      * แถวว่าง (ผู้ใช้ไม่ได้กรอกอะไรเลย) — ใช้บอกคอนโทรลเลอร์ว่าไม่ต้อง validate/save แถวนี้
      */

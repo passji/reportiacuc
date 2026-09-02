@@ -8,6 +8,8 @@ use yii\db\ActiveRecord;
 /**
  * @property int $id
  * @property int $report_id
+ * @property int|null $publication_id ไม่ว่างถ้าเป็นไฟล์แนบของข้อ 6.1 รายการใดรายการหนึ่งโดยเฉพาะ
+ * @property int|null $ip_filing_id ไม่ว่างถ้าเป็นไฟล์แนบของข้อ 6.2 รายการใดรายการหนึ่งโดยเฉพาะ
  * @property string $original_filename
  * @property string $stored_filename
  * @property int $file_size
@@ -23,7 +25,7 @@ class ReportAttachment extends ActiveRecord
     public function rules()
     {
         return [
-            [['report_id'], 'integer'],
+            [['report_id', 'publication_id', 'ip_filing_id'], 'integer'],
             [['original_filename', 'stored_filename'], 'required'],
             [['original_filename', 'stored_filename'], 'string', 'max' => 255],
             [['file_size'], 'integer'],

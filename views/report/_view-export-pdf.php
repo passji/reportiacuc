@@ -157,7 +157,7 @@ $redLabels = ['ส่งรายงานโดย', 'วันที่ส่�
     <?php foreach ($model->ipFilings as $ip): ?>
         <table>
             <tr><th>ประเภท</th><td><?= Html::encode(ReportIpFiling::IP_TYPE_LABELS[$ip->ip_type] ?? '-') ?></td></tr>
-            <tr><th>วันที่ยื่นจด</th><td><?= Html::encode($ip->filed_date ?: '-') ?></td></tr>
+            <tr><th>วันที่ยื่นจด</th><td><?= Html::encode(ThaiDate::format($ip->filed_date, false)) ?></td></tr>
             <tr><th>เลขที่จดทะเบียน</th><td><?= Html::encode($ip->registration_no ?: '-') ?></td></tr>
             <tr><th>ชื่อทรัพย์สิน</th><td><?= Html::encode($ip->asset_name ?: '-') ?></td></tr>
         </table>

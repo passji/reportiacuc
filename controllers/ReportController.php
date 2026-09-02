@@ -174,7 +174,7 @@ class ReportController extends SecureController
         $model->pi_name = (string) $project->m_pro_th;
         $model->project_name_th = (string) $project->oname;
         $model->project_name_en = (string) $project->oname_en;
-        $model->meeting_ref = trim(sprintf('ครั้งที่ %s วันที่ %s', $project->meeting_no, $project->meeting_date));
+        $model->meeting_ref = trim(sprintf('ครั้งที่ %s วันที่ %s', $project->meeting_no, ThaiDate::format($project->meeting_date)));
         $model->project_code = (string) ($project->getRawData()['meet_summary'] ?? '');
 
         $rawProjectData = $project->getRawData();
@@ -226,6 +226,24 @@ class ReportController extends SecureController
             $valid = $attachmentsModel->validate() && $valid;
             $attachmentErrors = $attachmentsModel->getErrors('attachments');
 
+            // ไฟล์ PDF แนบแยกรายข้อ 6.1/6.2 — คนละ input จาก attachments[] ด้านบน (ผูกกับ index
+            // ของแต่ละแถว ไม่ใช่ระดับทั้งฉบับ) ดึงเป็น array คู่ index เดียวกับ $publications/$ipFilings
+            // ไว้ก่อน จะได้ใช้ได้ทั้งตอน validate และตอน save
+            $publicationFiles = [];
+            foreach ($publications as $i => $pub) {
+                $publicationFiles[$i] = UploadedFile::getInstanceByName("ReportPublication[$i][pdf_file]");
+                if ($publicationFiles[$i] !== null) {
+                    $valid = $this->validateOptionalPdf($publicationFiles[$i], 'ไฟล์แนบผลงานตีพิมพ์รายการที่ ' . ($i + 1), $attachmentErrors) && $valid;
+                }
+            }
+            $ipFilingFiles = [];
+            foreach ($ipFilings as $i => $ip) {
+                $ipFilingFiles[$i] = UploadedFile::getInstanceByName("ReportIpFiling[$i][pdf_file]");
+                if ($ipFilingFiles[$i] !== null) {
+                    $valid = $this->validateOptionalPdf($ipFilingFiles[$i], 'ไฟล์แนบทรัพย์สินทางปัญญารายการที่ ' . ($i + 1), $attachmentErrors) && $valid;
+                }
+            }
+
             // ข้อ 6.1/6.2 เป็นสาขาของข้อ 6 — validate ก็ต่อเมื่อตอบ "มีการตีพิมพ์เผยแพร่" เท่านั้น
             // และข้ามแถวที่ผู้ใช้ไม่ได้กรอกอะไรเลย (isBlank) ไม่บังคับให้กรอกครบทุกแถว
             if ($model->has_publication === 'yes') {
@@ -249,7 +267,7 @@ class ReportController extends SecureController
                     }
 
                     if ($model->has_publication === 'yes') {
-                        foreach ($publications as $pub) {
+                        foreach ($publications as $i => $pub) {
                             if ($pub->isBlank()) {
                                 continue;
                             }
@@ -257,8 +275,11 @@ class ReportController extends SecureController
                             if (!$pub->save(false)) {
                                 throw new \RuntimeException('บันทึกผลงานตีพิมพ์ไม่สำเร็จ');
                             }
+                            if ($publicationFiles[$i] ?? null) {
+                                $this->saveItemAttachment($publicationFiles[$i], $model->id, ['publication_id' => $pub->id]);
+                            }
                         }
-                        foreach ($ipFilings as $ip) {
+                        foreach ($ipFilings as $i => $ip) {
                             if ($ip->isBlank()) {
                                 continue;
                             }
@@ -266,26 +287,15 @@ class ReportController extends SecureController
                             if (!$ip->save(false)) {
                                 throw new \RuntimeException('บันทึกข้อมูลทรัพย์สินทางปัญญาไม่สำเร็จ');
                             }
+                            if ($ipFilingFiles[$i] ?? null) {
+                                $this->saveItemAttachment($ipFilingFiles[$i], $model->id, ['ip_filing_id' => $ip->id]);
+                            }
                         }
                     }
 
                     if ($attachmentFiles) {
-                        $dir = Yii::getAlias('@app/uploads/reports/' . $model->id);
-                        FileHelper::createDirectory($dir, 0775);
                         foreach ($attachmentFiles as $file) {
-                            $storedFilename = Yii::$app->security->generateRandomString() . '.pdf';
-                            if (!$file->saveAs($dir . '/' . $storedFilename)) {
-                                throw new \RuntimeException('บันทึกไฟล์แนบไม่สำเร็จ');
-                            }
-                            $attachment = new ReportAttachment([
-                                'report_id' => $model->id,
-                                'original_filename' => $file->name,
-                                'stored_filename' => $storedFilename,
-                                'file_size' => $file->size,
-                            ]);
-                            if (!$attachment->save()) {
-                                throw new \RuntimeException('บันทึกข้อมูลไฟล์แนบไม่สำเร็จ');
-                            }
+                            $this->saveItemAttachment($file, $model->id, []);
                         }
                     }
 
@@ -375,11 +385,11 @@ class ReportController extends SecureController
         }
         $rows['ข้อ 2.1: สถานะการดำเนินโครงการ'] = $statusLabels[$model->status] ?? $model->status;
         if ($model->status === 'not_started') {
-            $rows['วันที่คาดว่าจะเริ่มดำเนินการ'] = $model->expected_start_date;
+            $rows['วันที่คาดว่าจะเริ่มดำเนินการ'] = ThaiDate::format($model->expected_start_date, false);
         } elseif ($model->status === 'in_progress') {
-            $rows['วันที่คาดว่าจะเสร็จสิ้น'] = $model->expected_complete_date;
+            $rows['วันที่คาดว่าจะเสร็จสิ้น'] = ThaiDate::format($model->expected_complete_date, false);
         } elseif ($model->status === 'completed') {
-            $rows['วันที่ดำเนินการเสร็จสิ้น'] = $model->completed_date;
+            $rows['วันที่ดำเนินการเสร็จสิ้น'] = ThaiDate::format($model->completed_date, false);
         }
         if (in_array($model->status, ['not_started', 'terminated_early', 'cancelled'], true)) {
             $rows['เหตุผลที่ยังไม่เริ่มดำเนินการ/ยุติ/ยกเลิกโครงการ'] = $model->stop_reason;
@@ -602,5 +612,59 @@ class ReportController extends SecureController
         }
 
         return $models;
+    }
+
+    /**
+     * ตรวจไฟล์ PDF แนบรายข้อ (ข้อ 6.1/6.2) ด้วย FileValidator เดียวกับที่ใช้กับ attachments[]
+     * ระดับทั้งฉบับ — คนละ error bucket กัน ($errors อ้างอิงแบบ by-reference ต่อท้ายเข้า
+     * $attachmentErrors ของผู้เรียก) ใส่ label นำหน้าบอกว่าไฟล์นี้เป็นของรายการไหน กันสับสนตอนแสดงผล
+     * รวมกับ error ของ attachments[] ในช่องเดียวกัน
+     */
+    private function validateOptionalPdf(UploadedFile $file, string $label, array &$errors): bool
+    {
+        $model = new DynamicModel(['file' => $file]);
+        $model->addRule('file', 'file', [
+            'extensions' => 'pdf',
+            'mimeTypes' => 'application/pdf',
+            'checkExtensionByMimeType' => true,
+            'maxSize' => 10 * 1024 * 1024,
+        ]);
+
+        if ($model->validate()) {
+            return true;
+        }
+
+        foreach ($model->getErrors('file') as $error) {
+            $errors[] = "{$label}: {$error}";
+        }
+
+        return false;
+    }
+
+    /**
+     * บันทึกไฟล์แนบ (PDF) ลงดิสก์ + สร้างแถว report_attachments — ใช้ร่วมกันทั้งเอกสารแนบระดับทั้งฉบับ
+     * (attachments[] เดิม, $extraAttrs ว่าง) และไฟล์แนบรายข้อ 6.1/6.2 ($extraAttrs มี publication_id
+     * หรือ ip_filing_id) เก็บไฟล์จริงไว้ที่โฟลเดอร์เดียวกันตาม report_id เสมอไม่ว่าจะผูกกับรายการย่อย
+     * หรือไม่ (ดาวน์โหลดผ่าน ReportController::actionDownloadAttachment() เส้นทางเดียวกันหมด)
+     */
+    private function saveItemAttachment(UploadedFile $file, int $reportId, array $extraAttrs): void
+    {
+        $dir = Yii::getAlias('@app/uploads/reports/' . $reportId);
+        FileHelper::createDirectory($dir, 0775);
+
+        $storedFilename = Yii::$app->security->generateRandomString() . '.pdf';
+        if (!$file->saveAs($dir . '/' . $storedFilename)) {
+            throw new \RuntimeException('บันทึกไฟล์แนบไม่สำเร็จ');
+        }
+
+        $attachment = new ReportAttachment(array_merge([
+            'report_id' => $reportId,
+            'original_filename' => $file->name,
+            'stored_filename' => $storedFilename,
+            'file_size' => $file->size,
+        ], $extraAttrs));
+        if (!$attachment->save()) {
+            throw new \RuntimeException('บันทึกข้อมูลไฟล์แนบไม่สำเร็จ');
+        }
     }
 }

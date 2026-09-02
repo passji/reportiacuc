@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use app\helpers\ThaiDate;
 
 /**
  * @property int $id
@@ -101,7 +102,8 @@ class ProgressReport extends ActiveRecord
             [['review_status'], 'default', 'value' => 'pending'],
             [['reviewed_by'], 'string', 'max' => 255],
             [['rejection_reason'], 'string'],
-            [['expected_start_date', 'expected_complete_date', 'completed_date', 'created_at', 'reviewed_at'], 'safe'],
+            [['created_at', 'reviewed_at'], 'safe'],
+            [['expected_start_date', 'expected_complete_date', 'completed_date'], 'validateThaiDate'],
             [['objective_changed'], 'in', 'range' => ['same', 'changed']],
             [['status'], 'in', 'range' => ['not_started', 'in_progress', 'completed', 'terminated_early', 'cancelled']],
             [['method_changed', 'adverse_event', 'personnel_changed', 'alt_method_found', 'has_publication'], 'in', 'range' => ['yes', 'no']],
@@ -174,6 +176,22 @@ class ProgressReport extends ActiveRecord
                 return $model->review_status === 'rejected';
             }],
         ];
+    }
+
+    /**
+     * ฟอร์มให้ผู้ใช้พิมพ์วันที่แบบไทย (วว/ดด/ปปปป พ.ศ. เช่น 01/12/2569) ไม่ใช่ ISO ตรงๆ — แปลง/
+     * ตรวจสอบตรงนี้ (ไม่ใช่แค่ฝั่ง JS) กันข้อมูลเพี้ยนถ้า JS พัง/ถูกข้าม แล้วทับ $this->$attribute
+     * ด้วยค่า ISO ที่แปลงแล้วเลย ผู้เรียกด้านหลัง (save/แสดงผล) จึงยังเห็นเป็น ISO ตามปกติ ใช้ร่วมกับ
+     * ReportIpFiling::validateThaiDate() (โครงสร้างเดียวกัน แยกเพราะเป็นคนละ AR)
+     */
+    public function validateThaiDate($attribute)
+    {
+        $parsed = ThaiDate::parseThaiInput($this->$attribute);
+        if ($parsed === false) {
+            $this->addError($attribute, 'รูปแบบวันที่ไม่ถูกต้อง กรุณากรอกเป็น วว/ดด/ปปปป (พ.ศ.) เช่น 01/12/2569');
+            return;
+        }
+        $this->$attribute = $parsed;
     }
 
     public function getResearchProject()

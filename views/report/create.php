@@ -7,6 +7,7 @@
 /** @var app\models\ReportIpFiling[] $ipFilings */
 /** @var array $attachmentErrors */
 
+use app\helpers\ThaiDate;
 use app\models\ProgressReport;
 use app\models\ReportPublication;
 use app\models\ReportIpFiling;
@@ -49,15 +50,18 @@ $statusOptions = [
 ];
 $yesNo = ['yes' => 'ใช่', 'no' => 'ไม่ใช่'];
 
+$this->registerCssFile('@web/css/vendor/flatpickr.min.css');
 $this->registerJsFile('@web/js/report-form.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJsFile('@web/js/dynamic-rows.js');
 $this->registerJsFile('@web/js/animal-usage-warning.js');
+$this->registerJsFile('@web/js/vendor/flatpickr.min.js');
+$this->registerJsFile('@web/js/thai-date-input.js');
 ?>
 <div class="report-create">
     <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>
     <p class="text-body-secondary small mb-4">
         เข้าสู่ระบบในนาม <strong><?= Html::encode(Yii::$app->session->get('sso_email')) ?></strong>
-        — ข้อมูลโครงการด้านล่างดึงสดจากระบบ A (<code>iacuc.kku.ac.th</code>) และบันทึกลงฐานข้อมูลของเราแล้ว
+        — ข้อมูลโครงการได้รับจากระบบ (<code>iacuc.kku.ac.th</code>) และบันทึกลงฐานข้อมูลของเราแล้ว
     </p>
 
     <div class="card border-0 shadow-sm mb-4">
@@ -172,13 +176,28 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
             <h2 class="h6 fw-bold mt-4 mb-3">ข้อ 2.1 — สถานะการดำเนินโครงการ</h2>
             <?= $form->field($model, 'status')->dropDownList($statusOptions, ['prompt' => '— เลือกสถานะ —']) ?>
             <div data-show-when="status:not_started">
-                <?= $form->field($model, 'expected_start_date')->input('date')->label('วันที่คาดว่าจะเริ่มดำเนินการ') ?>
+                <?= $form->field($model, 'expected_start_date')->textInput([
+                    'class' => 'form-control thai-date-input',
+                    'placeholder' => 'วว/ดด/ปปปป เช่น 01/12/2569',
+                    'value' => ThaiDate::toThaiInput($model->expected_start_date),
+                    'maxlength' => 10,
+                ])->label('วันที่คาดว่าจะเริ่มดำเนินการ') ?>
             </div>
             <div data-show-when="status:in_progress">
-                <?= $form->field($model, 'expected_complete_date')->input('date')->label('วันที่คาดว่าจะเสร็จสิ้น') ?>
+                <?= $form->field($model, 'expected_complete_date')->textInput([
+                    'class' => 'form-control thai-date-input',
+                    'placeholder' => 'วว/ดด/ปปปป เช่น 01/12/2569',
+                    'value' => ThaiDate::toThaiInput($model->expected_complete_date),
+                    'maxlength' => 10,
+                ])->label('วันที่คาดว่าจะเสร็จสิ้น') ?>
             </div>
             <div data-show-when="status:completed">
-                <?= $form->field($model, 'completed_date')->input('date')->label('วันที่ดำเนินการเสร็จสิ้น') ?>
+                <?= $form->field($model, 'completed_date')->textInput([
+                    'class' => 'form-control thai-date-input',
+                    'placeholder' => 'วว/ดด/ปปปป เช่น 01/12/2569',
+                    'value' => ThaiDate::toThaiInput($model->completed_date),
+                    'maxlength' => 10,
+                ])->label('วันที่ดำเนินการเสร็จสิ้น') ?>
             </div>
             <div data-show-when="status:not_started,terminated_early,cancelled">
                 <?= $form->field($model, 'stop_reason')->textarea(['rows' => 3])->label('เหตุผลที่ยังไม่เริ่มดำเนินการ/ยุติ/ยกเลิกโครงการ') ?>
@@ -257,13 +276,14 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
                 <h3 class="h6 fw-semibold mt-4 mb-1">ข้อมูลการตีพิมพ์ เผยแพร่</h3>
 
                 <h4 class="small fw-bold text-uppercase text-body-secondary mt-3 mb-2">6.1 กรณีตีพิมพ์เผยแพร่ในวารสารวิชาการ</h4>
-                <div id="publications-list">
+                <div id="publications-list" data-number-prefix="6.1.">
                     <?php foreach ($publications as $i => $pub): ?>
                         <div class="dynamic-row border rounded p-3 mb-3" data-index="<?= $i ?>">
+                            <div class="fw-bold text-primary mb-2">ผลงานที่ 6.1.<span class="row-number"><?= $i + 1 ?></span></div>
                             <div class="row g-2">
                                 <div class="col-12">
                                     <?= $form->field($pub, "[$i]article_title")->textarea(['rows' => 2])
-                                        ->label('6.1.1 ผลผลิต: บทความวิจัย ระบุชื่อบทความ') ?>
+                                        ->label('ผลผลิต: บทความวิจัย ระบุชื่อบทความ') ?>
                                 </div>
                                 <div class="col-sm-6">
                                     <?= $form->field($pub, "[$i]level")
@@ -271,7 +291,7 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
                                 </div>
                                 <div class="col-sm-6">
                                     <?= $form->field($pub, "[$i]journal_name")->textInput()
-                                        ->label('6.1.2 ตีพิมพ์ในวารสาร ระบุชื่อวารสาร') ?>
+                                        ->label('ตีพิมพ์ในวารสาร ระบุชื่อวารสาร') ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <?= $form->field($pub, "[$i]issue")->textInput()->label('ฉบับที่') ?>
@@ -290,16 +310,20 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
                                 </div>
                                 <div class="col-sm-6">
                                     <?= $form->field($pub, "[$i]db_type")
-                                        ->dropDownList(ReportPublication::DB_TYPE_LABELS, ['prompt' => '— 6.1.3 อยู่ในฐานข้อมูล —']) ?>
+                                        ->dropDownList(ReportPublication::DB_TYPE_LABELS, ['prompt' => '— อยู่ในฐานข้อมูล —']) ?>
                                 </div>
                                 <div class="col-sm-6">
                                     <?= $form->field($pub, "[$i]db_other")->textInput()->label('ระบุฐานข้อมูลอื่นๆ (ถ้ามี)') ?>
                                 </div>
                                 <div class="col-sm-3">
-                                    <?= $form->field($pub, "[$i]quartile")->textInput()->label('6.1.4 Quartile / กลุ่มที่') ?>
+                                    <?= $form->field($pub, "[$i]quartile")->textInput()->label('Quartile / กลุ่มที่') ?>
                                 </div>
                                 <div class="col-sm-3">
                                     <?= $form->field($pub, "[$i]impact_factor")->textInput()->label('Impact Factor') ?>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-semibold">แนบไฟล์ PDF (ถ้ามี)</label>
+                                    <input type="file" name="ReportPublication[<?= $i ?>][pdf_file]" accept="application/pdf" class="form-control">
                                 </div>
                             </div>
                             <button type="button" class="btn btn-outline-danger btn-sm mt-2" data-row-remove>ลบรายการนี้</button>
@@ -312,23 +336,33 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
 
                 <h4 class="small fw-bold text-uppercase text-body-secondary mt-2 mb-2">6.2 การยื่นจดทรัพย์สินทางปัญญา</h4>
                 <p class="text-body-secondary small">หากท่านตีพิมพ์ผลงานหรือยื่นจดทรัพย์สินทางปัญญามากกว่า 1 เรื่องจากโครงการนี้ กรุณาระบุรายละเอียดของผลงานทั้งหมด</p>
-                <div id="ip-filings-list">
+                <div id="ip-filings-list" data-number-prefix="6.2.">
                     <?php foreach ($ipFilings as $i => $ip): ?>
                         <div class="dynamic-row border rounded p-3 mb-3" data-index="<?= $i ?>">
+                            <div class="fw-bold text-primary mb-2">รายการที่ 6.2.<span class="row-number"><?= $i + 1 ?></span></div>
                             <div class="row g-2">
                                 <div class="col-sm-4">
                                     <?= $form->field($ip, "[$i]ip_type")
                                         ->dropDownList(ReportIpFiling::IP_TYPE_LABELS, ['prompt' => '— ประเภท —']) ?>
                                 </div>
                                 <div class="col-sm-4">
-                                    <?= $form->field($ip, "[$i]filed_date")->input('date')->label('6.2.1 วันที่ยื่นจด') ?>
+                                    <?= $form->field($ip, "[$i]filed_date")->textInput([
+                                        'class' => 'form-control thai-date-input',
+                                        'placeholder' => 'วว/ดด/ปปปป เช่น 01/12/2569',
+                                        'value' => ThaiDate::toThaiInput($ip->filed_date),
+                                        'maxlength' => 10,
+                                    ])->label('วันที่ยื่นจด') ?>
                                 </div>
                                 <div class="col-sm-4">
                                     <?= $form->field($ip, "[$i]registration_no")->textInput()
-                                        ->label('6.2.2 เลขที่จดทะเบียน') ?>
+                                        ->label('เลขที่จดทะเบียน') ?>
                                 </div>
                                 <div class="col-12">
                                     <?= $form->field($ip, "[$i]asset_name")->textInput()->label('ชื่อทรัพย์สิน') ?>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-semibold">แนบไฟล์ PDF (ถ้ามี)</label>
+                                    <input type="file" name="ReportIpFiling[<?= $i ?>][pdf_file]" accept="application/pdf" class="form-control">
                                 </div>
                             </div>
                             <button type="button" class="btn btn-outline-danger btn-sm mt-2" data-row-remove>ลบรายการนี้</button>
@@ -338,6 +372,7 @@ $this->registerJsFile('@web/js/animal-usage-warning.js');
                 <button type="button" class="btn btn-outline-primary btn-sm" data-row-add="ip-filings-list">
                     + เพิ่มรายการทรัพย์สินทางปัญญา
                 </button>
+                <p class="text-body-secondary small mt-2">หากส่งฟอร์มไม่ผ่านต้องเลือกไฟล์ PDF ที่แนบไว้ในแต่ละรายการใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</p>
             </div>
 
             <h2 class="h6 fw-bold mt-4 mb-3">เอกสารแนบ (PDF)</h2>

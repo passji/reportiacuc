@@ -19,6 +19,12 @@ $this->registerJsFile('@web/js/confirm-submit.js');
 
 $isAdmin = Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'));
 
+// เอกสารแนบระดับทั้งฉบับเท่านั้น (publication_id/ip_filing_id ว่างทั้งคู่) — ไฟล์แนบรายข้อ 6.1/6.2
+// แสดงแยกอยู่ในตารางของแต่ละรายการไปแล้วด้านบน กันไม่ให้ลิสต์ซ้ำสองที่
+$generalAttachments = array_filter($model->attachments, function ($attachment) {
+    return $attachment->publication_id === null && $attachment->ip_filing_id === null;
+});
+
 // ข้อมูลโครงการ (จากระบบ A) — เอามาแสดงในหน้านี้ด้วยแบบเดียวกับที่ report/oid ใช้ ให้ดูรายงานฉบับเดียว
 // รู้บริบทโครงการครบโดยไม่ต้องสลับไปหน้าประวัติ
 $project = $model->researchProject;
@@ -192,10 +198,11 @@ if ($project) {
                 <?php endif; ?>
                 <?php foreach ($model->publications as $index => $pub): ?>
                     <?php if ($index > 0): ?><hr><?php endif; ?>
+                    <p class="fw-bold text-primary mb-2">ผลงานที่ 6.1.<?= $index + 1 ?></p>
                     <table class="table table-sm mb-0">
                         <tbody>
                         <tr>
-                            <th class="text-body-secondary fw-normal" style="width: 320px;">6.1.1 ชื่อบทความ</th>
+                            <th class="text-body-secondary fw-normal" style="width: 320px;">ชื่อบทความ</th>
                             <td><?= Html::encode($pub->article_title ?: '-') ?></td>
                         </tr>
                         <tr>
@@ -203,7 +210,7 @@ if ($project) {
                             <td><?= Html::encode(ReportPublication::LEVEL_LABELS[$pub->level] ?? '-') ?></td>
                         </tr>
                         <tr>
-                            <th class="text-body-secondary fw-normal">6.1.2 วารสาร</th>
+                            <th class="text-body-secondary fw-normal">วารสาร</th>
                             <td>
                                 <?= Html::encode($pub->journal_name ?: '-') ?>
                                 <?php if ($pub->issue): ?> ฉบับที่ <?= Html::encode($pub->issue) ?><?php endif; ?>
@@ -215,15 +222,29 @@ if ($project) {
                             </td>
                         </tr>
                         <tr>
-                            <th class="text-body-secondary fw-normal">6.1.3 ฐานข้อมูล</th>
+                            <th class="text-body-secondary fw-normal">ฐานข้อมูล</th>
                             <td>
                                 <?= Html::encode(ReportPublication::DB_TYPE_LABELS[$pub->db_type] ?? '-') ?>
                                 <?php if ($pub->db_other): ?> (<?= Html::encode($pub->db_other) ?>)<?php endif; ?>
                             </td>
                         </tr>
                         <tr>
-                            <th class="text-body-secondary fw-normal">6.1.4 Quartile / Impact Factor</th>
+                            <th class="text-body-secondary fw-normal">Quartile / Impact Factor</th>
                             <td><?= Html::encode($pub->quartile ?: '-') ?> / <?= Html::encode($pub->impact_factor ?: '-') ?></td>
+                        </tr>
+                        <tr>
+                            <th class="text-body-secondary fw-normal">ไฟล์แนบ</th>
+                            <td>
+                                <?php if ($pub->attachment): ?>
+                                    <?= Html::a(
+                                        '<i class="fas fa-file-pdf me-1"></i>' . Html::encode($pub->attachment->original_filename),
+                                        ['download-attachment', 'id' => $pub->attachment->id],
+                                        ['class' => 'btn btn-sm btn-outline-secondary']
+                                    ) ?>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -241,6 +262,7 @@ if ($project) {
                 <?php endif; ?>
                 <?php foreach ($model->ipFilings as $index => $ip): ?>
                     <?php if ($index > 0): ?><hr><?php endif; ?>
+                    <p class="fw-bold text-primary mb-2">รายการที่ 6.2.<?= $index + 1 ?></p>
                     <table class="table table-sm mb-0">
                         <tbody>
                         <tr>
@@ -248,16 +270,30 @@ if ($project) {
                             <td><?= Html::encode(ReportIpFiling::IP_TYPE_LABELS[$ip->ip_type] ?? '-') ?></td>
                         </tr>
                         <tr>
-                            <th class="text-body-secondary fw-normal">6.2.1 วันที่ยื่นจด</th>
-                            <td><?= Html::encode($ip->filed_date ?: '-') ?></td>
+                            <th class="text-body-secondary fw-normal">วันที่ยื่นจด</th>
+                            <td><?= Html::encode(ThaiDate::format($ip->filed_date, false)) ?></td>
                         </tr>
                         <tr>
-                            <th class="text-body-secondary fw-normal">6.2.2 เลขที่จดทะเบียน</th>
+                            <th class="text-body-secondary fw-normal">เลขที่จดทะเบียน</th>
                             <td><?= Html::encode($ip->registration_no ?: '-') ?></td>
                         </tr>
                         <tr>
                             <th class="text-body-secondary fw-normal">ชื่อทรัพย์สิน</th>
                             <td><?= Html::encode($ip->asset_name ?: '-') ?></td>
+                        </tr>
+                        <tr>
+                            <th class="text-body-secondary fw-normal">ไฟล์แนบ</th>
+                            <td>
+                                <?php if ($ip->attachment): ?>
+                                    <?= Html::a(
+                                        '<i class="fas fa-file-pdf me-1"></i>' . Html::encode($ip->attachment->original_filename),
+                                        ['download-attachment', 'id' => $ip->attachment->id],
+                                        ['class' => 'btn btn-sm btn-outline-secondary']
+                                    ) ?>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -266,13 +302,13 @@ if ($project) {
         </div>
     <?php endif; ?>
 
-    <?php if ($model->attachments): ?>
+    <?php if ($generalAttachments): ?>
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-transparent fw-semibold">เอกสารแนบ</div>
             <div class="card-body p-0">
                 <table class="table table-sm mb-0">
                     <tbody>
-                    <?php foreach ($model->attachments as $attachment): ?>
+                    <?php foreach ($generalAttachments as $attachment): ?>
                         <?php $sizeKb = round($attachment->file_size / 1024); ?>
                         <tr>
                             <td><?= Html::encode($attachment->original_filename) ?></td>

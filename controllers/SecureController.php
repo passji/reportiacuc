@@ -6,8 +6,8 @@ use Yii;
 use yii\web\Controller;
 
 /**
- * Controller ฐานสำหรับหน้าที่ต้อง login ด้วยอีเมล @kku.ac.th ก่อน (เช็คแค่ session key
- * sso_email — ใช้ได้ทั้ง mock login และ SSONext จริงในอนาคต เพราะ session key ชื่อเดียวกัน)
+ * Controller ฐานสำหรับหน้าที่ต้อง login ก่อน (เช็คแค่ session key sso_email — ใช้ได้ทั้ง Google
+ * login ปัจจุบันและ SSONext จริงในอนาคต เพราะเขียน session key ชื่อเดียวกัน)
  */
 abstract class SecureController extends Controller
 {

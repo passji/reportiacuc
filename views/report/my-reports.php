@@ -16,6 +16,7 @@ $statusLabels = [
     'not_started' => 'ยังไม่เริ่มดำเนินการ',
     'in_progress' => 'อยู่ระหว่างดำเนินการ',
     'completed' => 'ดำเนินการเสร็จสิ้น',
+    'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
     'terminated_early' => 'ยุติโครงการก่อนกำหนด',
     'cancelled' => 'ยกเลิกโครงการ',
 ];
@@ -23,6 +24,7 @@ $statusBadgeClasses = [
     'not_started' => 'bg-secondary',
     'in_progress' => 'bg-primary',
     'completed' => 'bg-success',
+    'completed_closing' => 'bg-success',
     'terminated_early' => 'bg-warning text-dark',
     'cancelled' => 'bg-danger',
 ];
@@ -44,17 +46,21 @@ $statusBadgeClasses = [
                 <table class="table table-sm mb-0">
                     <thead>
                     <tr>
-                        <th>รหัสโครงการ</th>
+                        <th><?= $reportsProvider->sort->link('id', ['label' => 'ลำดับ']) ?></th>
+                        <th>เลขที่โครงการ</th>
                         <th>ชื่อโครงการ</th>
                         <th>สถานะการดำเนินโครงการ</th>
                         <th>ผลการตรวจสอบ</th>
-                        <th>ส่งเมื่อ</th>
+                        <th><?= $reportsProvider->sort->link('created_at', ['label' => 'ส่งเมื่อ']) ?></th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
+                    <?php $rowNo = $reportsProvider->pagination->getOffset(); ?>
                     <?php foreach ($reports as $report): ?>
+                        <?php $rowNo++; ?>
                         <tr>
+                            <td><?= $rowNo ?></td>
                             <td><?= Html::encode($report->project_code ?: '-') ?></td>
                             <td><?= Html::encode($report->researchProject->oname ?? $report->project_name_th) ?></td>
                             <td>

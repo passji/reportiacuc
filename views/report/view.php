@@ -55,7 +55,7 @@ if ($project) {
 ?>
 <div class="report-view">
     <div class="alert alert-success">
-        บันทึกรายงานความก้าวหน้าเรียบร้อยแล้ว (รหัสโครงการอ้างอิง oid: <?= Html::encode($model->oid) ?>)
+        บันทึกรายงานความก้าวหน้าเรียบร้อยแล้ว (ลำดับที่อ้างอิง oid: <?= Html::encode($model->oid) ?>)
     </div>
 
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
@@ -70,7 +70,7 @@ if ($project) {
                 <table class="table table-sm mb-0">
                     <tbody>
                     <tr>
-                        <th class="text-body-secondary fw-normal" style="width: 320px;">รหัสโครงการ</th>
+                        <th class="text-body-secondary fw-normal" style="width: 320px;">เลขที่โครงการ</th>
                         <td><?= Html::encode($project->getProjectCode() ?: '-') ?></td>
                     </tr>
                     <?php foreach ($projectFields as $attribute => $label): ?>

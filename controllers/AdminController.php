@@ -49,6 +49,8 @@ class AdminController extends SecureController
         }
         $startDate = trim((string) Yii::$app->request->get('start_date', ''));
         $endDate = trim((string) Yii::$app->request->get('end_date', ''));
+        $meetingStartDate = trim((string) Yii::$app->request->get('meeting_start_date', ''));
+        $meetingEndDate = trim((string) Yii::$app->request->get('meeting_end_date', ''));
 
         // ครอบ query ที่มี correlated subquery (latest_status/latest_submitted_at) ไว้เป็น derived
         // table ชั้นนอก เพราะ WHERE จะอ้างอิง alias ของ subquery ตรงๆ ไม่ได้ใน MySQL/MariaDB
@@ -58,6 +60,7 @@ class AdminController extends SecureController
                 'rp.oname',
                 'rp.m_pro_th',
                 'rp.s_email',
+                'rp.meeting_date',
                 'latest_status' => '(SELECT pr.status FROM {{%progress_reports}} pr'
                     . ' WHERE pr.oid = rp.oid ORDER BY pr.created_at DESC LIMIT 1)',
                 'latest_submitted_at' => '(SELECT pr.created_at FROM {{%progress_reports}} pr'
@@ -78,6 +81,14 @@ class AdminController extends SecureController
         }
         if ($endDate !== '') {
             $query->andWhere(['<=', 't.latest_submitted_at', $endDate . ' 23:59:59']);
+        }
+        // meeting_date เก็บเป็น string เต็มรูปแบบ "Y-m-d H:i:s" (มาจากระบบ A ตรงๆ ไม่ได้แปลงเป็น
+        // DATE column) เทียบช่วงแบบ string ได้ตรงเพราะ format เรียงลำดับได้ (ISO-like)
+        if ($meetingStartDate !== '') {
+            $query->andWhere(['>=', 't.meeting_date', $meetingStartDate . ' 00:00:00']);
+        }
+        if ($meetingEndDate !== '') {
+            $query->andWhere(['<=', 't.meeting_date', $meetingEndDate . ' 23:59:59']);
         }
 
         $projects = $query->orderBy(['t.oname' => SORT_ASC])->all();
@@ -134,6 +145,8 @@ class AdminController extends SecureController
             'statusFilter' => $statusFilter,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'meetingStartDate' => $meetingStartDate,
+            'meetingEndDate' => $meetingEndDate,
             'notifStartDate' => $notifStartDate,
             'notifEndDate' => $notifEndDate,
             'notifSearch' => $notifSearch,
@@ -255,7 +268,7 @@ class AdminController extends SecureController
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('ตรวจสอบรายงาน');
 
-        $headers = ['รหัสโครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'ส่งเมื่อ', 'ส่งโดย', 'สถานะการตรวจสอบ', 'หมายเหตุ'];
+        $headers = ['เลขที่โครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'ส่งเมื่อ', 'ส่งโดย', 'สถานะการตรวจสอบ', 'หมายเหตุ'];
         foreach ($headers as $i => $header) {
             $sheet->setCellValue([$i + 1, 1], $header);
         }

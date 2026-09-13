@@ -61,7 +61,7 @@ $redLabels = ['ส่งรายงานโดย', 'วันที่ส่�
 
 <h1><?= Html::encode('รายงานความก้าวหน้าโครงการ #' . $model->id) ?></h1>
 <div class="subtitle">
-    รหัสโครงการอ้างอิง oid: <?= Html::encode($model->oid) ?>
+    ลำดับที่อ้างอิง oid: <?= Html::encode($model->oid) ?>
     &nbsp;|&nbsp; พิมพ์เมื่อ <?= Html::encode(ThaiDate::format(date('Y-m-d H:i:s'))) ?>
 </div>
 
@@ -69,7 +69,7 @@ $redLabels = ['ส่งรายงานโดย', 'วันที่ส่�
     <h2>ข้อมูลโครงการ</h2>
     <table>
         <tr>
-            <th>รหัสโครงการ</th>
+            <th>เลขที่โครงการ</th>
             <td><?= Html::encode($project->getProjectCode() ?: '-') ?></td>
         </tr>
         <?php foreach ($projectFields as $attribute => $label): ?>

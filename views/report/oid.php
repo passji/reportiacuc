@@ -20,6 +20,7 @@ $statusLabels = [
     'not_started' => 'ยังไม่เริ่มดำเนินการ',
     'in_progress' => 'อยู่ระหว่างดำเนินการ',
     'completed' => 'ดำเนินการเสร็จสิ้น',
+    'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
     'terminated_early' => 'ยุติโครงการก่อนกำหนด',
     'cancelled' => 'ยกเลิกโครงการ',
 ];
@@ -76,7 +77,7 @@ $hasSecondGroup = $animalGroups['has_second_group'] || $secondMale !== null || $
             <table class="table table-sm mb-0">
                 <tbody>
                 <tr>
-                    <th class="text-body-secondary fw-normal" style="width: 240px;">รหัสโครงการ</th>
+                    <th class="text-body-secondary fw-normal" style="width: 240px;">เลขที่โครงการ</th>
                     <td><?= Html::encode($projectCode ?: '-') ?></td>
                 </tr>
                 <?php foreach ($fields as $attribute => $label): ?>

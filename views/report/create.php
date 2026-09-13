@@ -14,16 +14,16 @@ use app\models\ReportIpFiling;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'แจ้งความก้าวหน้าโครงการ — ' . $project->oid;
+$this->title = 'แจ้งความก้าวหน้าโครงการ — ' . $project->getProjectCode();
 $this->params['breadcrumbs'][] = $this->title;
 
 $fields = [
-    'oid' => 'รหัสโครงการ (oid)',
+    'oid' => 'ลำดับที่(oid)',
     'oname' => 'ชื่อโครงการ (ไทย)',
     'oname_en' => 'ชื่อโครงการ (อังกฤษ)',
     'm_pro_th' => 'หัวหน้าโครงการ',
     'm_pro_dept_th' => 'สังกัด/ภาควิชา',
-    'md_name' => 'สัตวแพทย์ประจำโครงการ',
+    'md_name' => 'สัตวแพทย์ประจำโครงการ/สัตวแพทย์ประจำสถานีบริการ',
     'meeting_no' => 'ครั้งที่ประชุม',
     'meeting_date' => 'วันที่ประชุม',
     's_email' => 'อีเมลผู้ยื่นโครงการ',
@@ -44,7 +44,7 @@ $hasSecondGroup = $animalGroups['has_second_group'] || $secondMale !== null || $
 $statusOptions = [
     'not_started' => 'ยังไม่เริ่มดำเนินการ',
     'in_progress' => 'อยู่ระหว่างดำเนินการ',
-    'completed' => 'ดำเนินการเสร็จสิ้น',
+    'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
     'terminated_early' => 'ยุติโครงการก่อนกำหนด',
     'cancelled' => 'ยกเลิกโครงการ',
 ];
@@ -65,6 +65,7 @@ $this->registerJsFile('@web/js/dynamic-rows.js' . $assetVersion('js/dynamic-rows
 $this->registerJsFile('@web/js/animal-usage-warning.js' . $assetVersion('js/animal-usage-warning.js'));
 $this->registerJsFile('@web/js/vendor/flatpickr.min.js');
 $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date-input.js'));
+$this->registerJsFile('@web/js/report-preview.js' . $assetVersion('js/report-preview.js'), ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
 <div class="report-create">
     <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>
@@ -165,12 +166,13 @@ $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date
                 'options' => ['enctype' => 'multipart/form-data'],
             ]); ?>
 
+            <div id="report-form-fields">
             <h2 class="h6 fw-bold mt-2 mb-3">ข้อมูลโครงการ</h2>
-            <?= $form->field($model, 'project_code')->textInput(['maxlength' => 50,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 1: รหัสโครงการ') ?>
-            <?= $form->field($model, 'meeting_ref')->textInput(['maxlength' => 255,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 2: เข้าประชุมครั้งที่ / วันที่พิจารณา') ?>
-            <?= $form->field($model, 'pi_name')->textInput(['maxlength' => 255,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 3: ชื่อหัวหน้าโครงการ') ?>
-            <?= $form->field($model, 'project_name_th')->textarea(['rows' => 2,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 4: ชื่อโครงการ (ภาษาไทย)') ?>
-            <?= $form->field($model, 'project_name_en')->textarea(['rows' => 2,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 5: ชื่อโครงการ (ภาษาอังกฤษ)') ?>
+            <?= $form->field($model, 'project_code')->textInput(['maxlength' => 50,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 1: เลขที่โครงการ') ?>
+            <?= Html::activeHiddenInput($model, 'meeting_ref') ?>
+            <?= $form->field($model, 'pi_name')->textInput(['maxlength' => 255,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 2: ชื่อหัวหน้าโครงการ') ?>
+            <?= $form->field($model, 'project_name_th')->textarea(['rows' => 2,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 3: ชื่อโครงการ (ภาษาไทย)') ?>
+            <?= $form->field($model, 'project_name_en')->textarea(['rows' => 2,'readonly' => true,'class'=>'form-control bg-body-secondary'])->label('ข้อ 4: ชื่อโครงการ (ภาษาอังกฤษ)') ?>
 
             <h2 class="h6 fw-bold mt-2 mb-3">รายงานความก้าวหน้าโครงการ</h2>
             <h2 class="h6 fw-bold mt-4 mb-3">ข้อ 1 — วัตถุประสงค์โครงการ</h2>
@@ -200,7 +202,7 @@ $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date
                     'maxlength' => 10,
                 ])->label('วันที่คาดว่าจะเสร็จสิ้น') ?>
             </div>
-            <div data-show-when="status:completed">
+            <div data-show-when="status:completed_closing">
                 <?= $form->field($model, 'completed_date')->textInput([
                     'class' => 'form-control thai-date-input',
                     'placeholder' => 'วว/ดด/ปปปป เช่น 01/12/2569',
@@ -384,6 +386,8 @@ $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date
                 <p class="text-body-secondary small mt-2">หากส่งฟอร์มไม่ผ่านต้องเลือกไฟล์ PDF ที่แนบไว้ในแต่ละรายการใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</p>
             </div>
 
+            <p class="text-danger small mb-2">หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานรับรองจาก คกส.มข</p>
+
             <h2 class="h6 fw-bold mt-4 mb-3">เอกสารแนบ (PDF)</h2>
             <?php if (!empty($attachmentErrors)): ?>
                 <div class="alert alert-danger py-2">
@@ -396,9 +400,44 @@ $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date
                 <input type="file" name="attachments[]" multiple accept="application/pdf" class="form-control">
                 <div class="form-text">แนบไฟล์ PDF ได้หลายไฟล์ (ไม่เกิน 10 ไฟล์ ไฟล์ละไม่เกิน 10MB) — ถ้าฟอร์มส่งไม่ผ่านต้องเลือกไฟล์แนบใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</div>
             </div>
+            </div><!-- /#report-form-fields -->
 
             <div class="d-grid mt-4">
                 <?= Html::submitButton('ส่งรายงาน', ['class' => 'btn btn-primary btn-lg']) ?>
+            </div>
+
+            <!-- Modal ตรวจสอบข้อมูลก่อนส่งจริง — เปิดเมื่อ client validation ของฟอร์มด้านบนผ่านหมดแล้ว
+                 เท่านั้น (ผูกกับ event 'beforeSubmit' ของ yii.activeForm.js ดู web/js/report-preview.js)
+                 checkbox รับรอง 2 ข้อยังอยู่ "ใน form เดียวกัน" นี้ (ไม่ใช่ form ซ้อน) เพื่อให้ค่าที่ผู้ใช้
+                 ติ๊กถูกส่งไปพร้อมข้อมูลฟอร์มจริงตอนกด "ยืนยันและส่งรายงาน" — ฝั่งเซิร์ฟเวอร์ก็เช็คซ้ำอีกชั้น
+                 (ดู ReportController::actionCreate()) กันกรณี bypass JS ยิง POST ตรงมาเอง -->
+            <div class="modal fade" id="report-preview-modal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">ตรวจสอบข้อมูลก่อนส่งรายงาน</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="report-preview-recap"></div>
+                            <hr>
+                            <p class="fw-semibold mb-1">ท่านได้ตรวจสอบความถูกต้องเรียบร้อยแล้ว</p>
+                            <p class="mb-3">ทุกอย่างถือเป็นความรับผิดชอบของท่าน</p>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="report-certify-data" name="certify_data" value="1">
+                                <label class="form-check-label" for="report-certify-data">ข้าพเจ้าขอรับรองข้อมูลที่นำเข้าระบบทั้งหมด</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="report-certify-true" name="certify_true" value="1">
+                                <label class="form-check-label" for="report-certify-true">ข้าพเจ้าขอรับรองว่าข้อมูลทั้งหมด เป็นความจริงทุกประการ</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">กลับไปแก้ไข</button>
+                            <button type="button" class="btn btn-primary" id="report-preview-confirm-btn" disabled>ยืนยันและส่งรายงาน</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <?php ActiveForm::end(); ?>

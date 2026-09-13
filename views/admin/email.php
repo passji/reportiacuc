@@ -6,6 +6,8 @@
 /** @var string $statusFilter */
 /** @var string $startDate */
 /** @var string $endDate */
+/** @var string $meetingStartDate */
+/** @var string $meetingEndDate */
 /** @var app\models\ReportNotification[] $notifications */
 /** @var yii\data\ActiveDataProvider $notificationsProvider */
 /** @var string $notifStartDate */
@@ -86,14 +88,23 @@ $this->registerJs('
                     <label class="form-label small fw-semibold" for="end_date">ถึงวันที่</label>
                     <?= Html::input('date', 'end_date', $endDate, ['id' => 'end_date', 'class' => 'form-control']) ?>
                 </div>
+                <div class="col-sm-3 col-md-2">
+                    <label class="form-label small fw-semibold" for="meeting_start_date">วันที่ประชุมตั้งแต่</label>
+                    <?= Html::input('date', 'meeting_start_date', $meetingStartDate, ['id' => 'meeting_start_date', 'class' => 'form-control']) ?>
+                </div>
+                <div class="col-sm-3 col-md-2">
+                    <label class="form-label small fw-semibold" for="meeting_end_date">ถึงวันที่</label>
+                    <?= Html::input('date', 'meeting_end_date', $meetingEndDate, ['id' => 'meeting_end_date', 'class' => 'form-control']) ?>
+                </div>
                 <div class="col-sm-4 col-md-auto d-flex gap-2">
                     <?= Html::submitButton('ค้นหา', ['class' => 'btn btn-primary']) ?>
                     <?= Html::a('ล้างตัวกรอง', ['email'], ['class' => 'btn btn-outline-secondary']) ?>
                 </div>
             <?= Html::endForm() ?>
             <p class="text-body-secondary small mb-0 mt-2">
-                ช่วงวันที่ (ถ้าระบุ) กรองจากวันที่ส่งรายงานฉบับล่าสุดของแต่ละโครงการ —
-                โครงการที่ยังไม่เคยส่งรายงานเลยจะไม่ปรากฏถ้าเลือกช่วงวันที่
+                "ส่งรายงานล่าสุดตั้งแต่/ถึงวันที่" กรองจากวันที่ส่งรายงานฉบับล่าสุดของแต่ละโครงการ —
+                โครงการที่ยังไม่เคยส่งรายงานเลยจะไม่ปรากฏถ้าเลือกช่วงนี้ ส่วน "วันที่ประชุมตั้งแต่/ถึงวันที่"
+                กรองจากวันที่ประชุมพิจารณาโครงการ (ใช้ได้กับโครงการทุกสถานะ ไม่ว่าจะเคยส่งรายงานหรือไม่)
             </p>
         </div>
     </div>
@@ -191,6 +202,8 @@ $this->registerJs('
                 <?= Html::hiddenInput('status', $statusFilter) ?>
                 <?= Html::hiddenInput('start_date', $startDate) ?>
                 <?= Html::hiddenInput('end_date', $endDate) ?>
+                <?= Html::hiddenInput('meeting_start_date', $meetingStartDate) ?>
+                <?= Html::hiddenInput('meeting_end_date', $meetingEndDate) ?>
                 <div class="col-sm-3 col-md-2">
                     <label class="form-label small fw-semibold" for="notif_start_date">ส่งตั้งแต่วันที่</label>
                     <?= Html::input('date', 'notif_start_date', $notifStartDate, ['id' => 'notif_start_date', 'class' => 'form-control']) ?>
@@ -209,7 +222,14 @@ $this->registerJs('
                 </div>
                 <div class="col-sm-4 col-md-auto d-flex gap-2">
                     <?= Html::submitButton('กรอง', ['class' => 'btn btn-primary']) ?>
-                    <?= Html::a('ล้างตัวกรอง', ['email', 'status' => $statusFilter, 'start_date' => $startDate, 'end_date' => $endDate], ['class' => 'btn btn-outline-secondary']) ?>
+                    <?= Html::a('ล้างตัวกรอง', [
+                        'email',
+                        'status' => $statusFilter,
+                        'start_date' => $startDate,
+                        'end_date' => $endDate,
+                        'meeting_start_date' => $meetingStartDate,
+                        'meeting_end_date' => $meetingEndDate,
+                    ], ['class' => 'btn btn-outline-secondary']) ?>
                 </div>
             <?= Html::endForm() ?>
         </div>

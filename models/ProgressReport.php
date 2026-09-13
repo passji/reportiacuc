@@ -105,7 +105,7 @@ class ProgressReport extends ActiveRecord
             [['created_at', 'reviewed_at'], 'safe'],
             [['expected_start_date', 'expected_complete_date', 'completed_date'], 'validateThaiDate'],
             [['objective_changed'], 'in', 'range' => ['same', 'changed']],
-            [['status'], 'in', 'range' => ['not_started', 'in_progress', 'completed', 'terminated_early', 'cancelled']],
+            [['status'], 'in', 'range' => ['not_started', 'in_progress', 'completed', 'completed_closing', 'terminated_early', 'cancelled']],
             [['method_changed', 'adverse_event', 'personnel_changed', 'alt_method_found', 'has_publication'], 'in', 'range' => ['yes', 'no']],
             [['status_flag'], 'in', 'range' => ['draft', 'submitted']],
             [['status_flag'], 'default', 'value' => 'draft'],
@@ -132,9 +132,10 @@ class ProgressReport extends ActiveRecord
                 return $('#progressreport-status').val() === 'in_progress';
             }"],
             [['completed_date'], 'required', 'when' => function ($model) {
-                return $model->status === 'completed';
+                return in_array($model->status, ['completed', 'completed_closing'], true);
             }, 'whenClient' => "function (attribute, value) {
-                return $('#progressreport-status').val() === 'completed';
+                var v = $('#progressreport-status').val();
+                return v === 'completed' || v === 'completed_closing';
             }"],
             [['stop_reason'], 'required', 'when' => function ($model) {
                 return in_array($model->status, ['not_started', 'terminated_early', 'cancelled'], true);

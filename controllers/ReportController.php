@@ -135,12 +135,16 @@ class ReportController extends SecureController
         $reportsProvider = new ActiveDataProvider([
             'query' => ProgressReport::find()
                 ->where(['submitted_by_email' => (string) Yii::$app->session->get('sso_email')])
-                ->with('researchProject')
-                ->orderBy(['created_at' => SORT_DESC]),
+                ->with('researchProject'),
             'pagination' => [
                 'pageSize' => 25,
             ],
-            'sort' => false,
+            'sort' => [
+                // "ลำดับ" ในหน้า my-reports.php ผูกกับ id (ตัวเลขเรียงตามลำดับที่ส่งจริง) —
+                // ให้ผู้ใช้สลับดูได้ทั้งเก่าสุดก่อน/ใหม่สุดก่อน โดยไม่ต้องมีคอลัมน์แยกที่ sort เองไม่ได้
+                'attributes' => ['id', 'created_at'],
+                'defaultOrder' => ['created_at' => SORT_DESC],
+            ],
         ]);
 
         return $this->render('my-reports', [
@@ -171,7 +175,7 @@ class ReportController extends SecureController
 
         $model = new ProgressReport();
         $model->oid = $project->oid;
-        $model->pi_name = (string) $project->m_pro_th;
+        $model->pi_name = trim((string) $project->m_pro_th . ($project->m_pro_dept_th ? ' (' . $project->m_pro_dept_th . ')' : ''));
         $model->project_name_th = (string) $project->oname;
         $model->project_name_en = (string) $project->oname_en;
         $model->meeting_ref = trim(sprintf('ครั้งที่ %s วันที่ %s', $project->meeting_no, ThaiDate::format($project->meeting_date)));
@@ -225,6 +229,14 @@ class ReportController extends SecureController
             $valid = $model->validate();
             $valid = $attachmentsModel->validate() && $valid;
             $attachmentErrors = $attachmentsModel->getErrors('attachments');
+
+            // เช็คซ้ำฝั่งเซิร์ฟเวอร์ว่าติ๊กรับรองครบ 2 ข้อในหน้าตรวจสอบ (modal) จริง — checkbox ทั้งสอง
+            // ไม่ใช่ attribute ของโมเดลไหนเลย เป็นแค่ input ธรรมดาในฟอร์มเดียวกัน (ดู create.php)
+            // ต้องเช็คตรงนี้กันกรณี JS ถูกปิด/ข้าม/ยิง POST ตรงมาเอง ไม่ใช่พึ่งแค่ JS ฝั่ง client
+            if (Yii::$app->request->post('certify_data') !== '1' || Yii::$app->request->post('certify_true') !== '1') {
+                $valid = false;
+                Yii::$app->session->setFlash('error', 'กรุณายืนยันข้อความรับรองทั้ง 2 ข้อในหน้าตรวจสอบก่อนส่งรายงาน');
+            }
 
             // ไฟล์ PDF แนบแยกรายข้อ 6.1/6.2 — คนละ input จาก attachments[] ด้านบน (ผูกกับ index
             // ของแต่ละแถว ไม่ใช่ระดับทั้งฉบับ) ดึงเป็น array คู่ index เดียวกับ $publications/$ipFilings
@@ -368,13 +380,14 @@ class ReportController extends SecureController
             'not_started' => 'ยังไม่เริ่มดำเนินการ',
             'in_progress' => 'อยู่ระหว่างดำเนินการ',
             'completed' => 'ดำเนินการเสร็จสิ้น',
+            'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
             'terminated_early' => 'ยุติโครงการก่อนกำหนด',
             'cancelled' => 'ยกเลิกโครงการ',
         ];
         $yesNoLabels = ['yes' => 'ใช่', 'no' => 'ไม่ใช่'];
 
         $rows = [
-            'ข้อ 1: รหัสโครงการ' => $model->project_code,
+            'ข้อ 1: เลขที่โครงการ' => $model->project_code,
             'ข้อ 2: เข้าประชุมครั้งที่ / วันที่พิจารณา' => $model->meeting_ref,
             'ข้อ 3: ชื่อหัวหน้าโครงการ' => $model->pi_name,
             'ข้อ 4: ชื่อโครงการ (ภาษาไทย)' => $model->project_name_th,
@@ -389,7 +402,7 @@ class ReportController extends SecureController
             $rows['วันที่คาดว่าจะเริ่มดำเนินการ'] = ThaiDate::format($model->expected_start_date, false);
         } elseif ($model->status === 'in_progress') {
             $rows['วันที่คาดว่าจะเสร็จสิ้น'] = ThaiDate::format($model->expected_complete_date, false);
-        } elseif ($model->status === 'completed') {
+        } elseif (in_array($model->status, ['completed', 'completed_closing'], true)) {
             $rows['วันที่ดำเนินการเสร็จสิ้น'] = ThaiDate::format($model->completed_date, false);
         }
         if (in_array($model->status, ['not_started', 'terminated_early', 'cancelled'], true)) {

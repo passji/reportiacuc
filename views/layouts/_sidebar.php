@@ -12,12 +12,13 @@ $isLoggedIn = !empty(Yii::$app->session->get('sso_email'));
 $isAdmin = Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'));
 $route = Yii::$app->controller->route;
 
-// "Home" ชี้ไปที่ homeUrl (report/my-reports ตาม config/web.php) ไม่ใช่ site/index แบบเดิม (หน้า
-// boilerplate ของ Yii เฉยๆ ไม่เกี่ยวกับระบบนี้เลย ต้นเหตุของปัญหา "login แล้วดูเหมือนไม่ login" ก่อน
-// หน้านี้) ซ้ำกับ "รายงานของฉัน" โดยตั้งใจ (active พร้อมกันทั้งคู่ตอนอยู่หน้านั้น) เพราะผู้ใช้คาดหวังให้
-// มีรายการ "Home" อยู่เสมอ
+// "Home" ชี้ไปที่ site/index ตามที่ผู้ใช้ยืนยันแล้ว — เดิมเคยชี้ไปที่นี่มาก่อนแล้วเปลี่ยนออกเพราะเจอ
+// ปัญหา "login แล้วดูเหมือนไม่ login" (site/index เป็นหน้า boilerplate เปล่าๆ ของ Yii ไม่โชว์สถานะ
+// login/ไม่เกี่ยวกับระบบนี้) ตอนนี้เปลี่ยนกลับมาชี้ที่นี่อีกครั้งตามคำขอ — ถ้าเจอปัญหาเดิมซ้ำอีก
+// (ผู้ใช้สับสนว่า login สำเร็จหรือไม่หลังกด Home) ให้พิจารณาปรับเนื้อหา site/index ให้โชว์สถานะ login
+// แทนที่จะเปลี่ยน route กลับไปมาเฉยๆ
 $navItems = [
-    ['label' => 'Home', 'icon' => 'fa-house', 'url' => Yii::$app->homeUrl, 'route' => 'report/my-reports', 'visible' => true],
+    ['label' => 'Home', 'icon' => 'fa-house', 'url' => ['/site/index'], 'route' => 'site/index', 'visible' => true],
     ['label' => 'รายงานของฉัน', 'icon' => 'fa-file-lines', 'url' => ['/report/my-reports'], 'route' => 'report/my-reports', 'visible' => $isLoggedIn],
 ];
 $staffToolsItems = [

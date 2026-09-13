@@ -20,6 +20,7 @@ $statusLabels = [
     'not_started' => 'ยังไม่เริ่มดำเนินการ',
     'in_progress' => 'อยู่ระหว่างดำเนินการ',
     'completed' => 'ดำเนินการเสร็จสิ้น',
+    'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
     'terminated_early' => 'ยุติโครงการก่อนกำหนด',
     'cancelled' => 'ยกเลิกโครงการ',
 ];
@@ -27,6 +28,7 @@ $statusBadgeClasses = [
     'not_started' => 'bg-secondary',
     'in_progress' => 'bg-primary',
     'completed' => 'bg-success',
+    'completed_closing' => 'bg-success',
     'terminated_early' => 'bg-warning text-dark',
     'cancelled' => 'bg-danger',
 ];
@@ -66,7 +68,7 @@ $statusBadgeClasses = [
         <div class="card-body">
             <?= Html::beginForm(['index'], 'get', ['class' => 'row g-2 align-items-end']) ?>
                 <div class="col-sm-6 col-md-4">
-                    <label class="form-label small fw-semibold" for="search">ค้นหาชื่อโครงการ / รหัสโครงการ</label>
+                    <label class="form-label small fw-semibold" for="search">ค้นหาชื่อโครงการ / เลขที่โครงการ</label>
                     <?= Html::textInput('search', $search, [
                         'id' => 'search',
                         'class' => 'form-control',
@@ -104,7 +106,7 @@ $statusBadgeClasses = [
                 <table class="table table-sm mb-0">
                     <thead>
                     <tr>
-                        <th>รหัสโครงการ</th>
+                        <th>เลขที่โครงการ</th>
                         <th>ชื่อโครงการ</th>
                         <th>หัวหน้าโครงการ</th>
                         <th>สถานะการดำเนินโครงการ</th>
@@ -152,7 +154,7 @@ $statusBadgeClasses = [
                 <table class="table table-sm mb-0">
                     <thead>
                     <tr>
-                        <th>รหัสโครงการ</th>
+                        <th>เลขที่โครงการ</th>
                         <th>ชื่อโครงการ</th>
                         <th>หัวหน้าโครงการ</th>
                         <th>อีเมลผู้ยื่นโครงการ</th>

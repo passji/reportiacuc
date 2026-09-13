@@ -57,7 +57,7 @@ class DashboardController extends SecureController
         $sort = new Sort([
             'sortParam' => 'recent-sort',
             'attributes' => [
-                'project_code' => ['label' => 'รหัสโครงการ'],
+                'project_code' => ['label' => 'เลขที่โครงการ'],
                 'oname' => ['label' => 'ชื่อโครงการ'],
                 'm_pro_th' => ['label' => 'หัวหน้าโครงการ'],
                 'latest_status' => ['label' => 'สถานะ'],
@@ -112,7 +112,7 @@ class DashboardController extends SecureController
             'sort' => [
                 'sortParam' => 'report-sort',
                 'attributes' => [
-                    'project_code' => ['label' => 'รหัสโครงการ'],
+                    'project_code' => ['label' => 'เลขที่โครงการ'],
                     // เรียงตามคอลัมน์ project_name_th ของ progress_reports เอง — คอลัมน์ที่แสดงจริง
                     // ในตาราง (researchProject.oname ?? project_name_th) มาจาก related table ที่ join
                     // ไม่ถึง จึงใช้ค่านี้แทนโดยประมาณ
@@ -250,7 +250,7 @@ class DashboardController extends SecureController
 
         $projectsSheet = $spreadsheet->createSheet();
         $projectsSheet->setTitle('รายการโครงการ');
-        $projectHeaders = ['รหัสโครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'สถานะ', 'ผลการตรวจสอบ', 'จำนวนรายงานในช่วงนี้', 'ส่งล่าสุดเมื่อ'];
+        $projectHeaders = ['เลขที่โครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'สถานะ', 'ผลการตรวจสอบ', 'จำนวนรายงานในช่วงนี้', 'ส่งล่าสุดเมื่อ'];
         foreach ($projectHeaders as $i => $header) {
             $projectsSheet->setCellValue([$i + 1, 1], $header);
         }
@@ -273,7 +273,7 @@ class DashboardController extends SecureController
 
         $detail = $spreadsheet->createSheet();
         $detail->setTitle('รายงาน');
-        $headers = ['รหัสโครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'สถานะ', 'ผลการตรวจสอบ', 'วันที่ส่ง'];
+        $headers = ['เลขที่โครงการ', 'ชื่อโครงการ', 'หัวหน้าโครงการ', 'สถานะ', 'ผลการตรวจสอบ', 'วันที่ส่ง'];
         foreach ($headers as $i => $header) {
             $detail->setCellValue([$i + 1, 1], $header);
         }
@@ -387,6 +387,7 @@ class DashboardController extends SecureController
             'not_started' => 'ยังไม่เริ่มดำเนินการ',
             'in_progress' => 'อยู่ระหว่างดำเนินการ',
             'completed' => 'ดำเนินการเสร็จสิ้น',
+            'completed_closing' => 'ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ',
             'terminated_early' => 'ยุติโครงการก่อนกำหนด',
             'cancelled' => 'ยกเลิกโครงการ',
         ];

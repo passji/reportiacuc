@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-sm mb-0">
                     <thead>
                     <tr>
-                        <th>รหัสโครงการ</th>
+                        <th>เลขที่โครงการ</th>
                         <th>ชื่อโครงการ</th>
                         <th>หัวหน้าโครงการ</th>
                         <th>ส่งเมื่อ</th>

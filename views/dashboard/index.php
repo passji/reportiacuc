@@ -35,6 +35,7 @@ $statusBadgeClasses = [
     'not_started' => 'bg-secondary',
     'in_progress' => 'bg-primary',
     'completed' => 'bg-success',
+    'completed_closing' => 'bg-success',
     'terminated_early' => 'bg-warning text-dark',
     'cancelled' => 'bg-danger',
 ];
@@ -42,6 +43,7 @@ $statusColors = [
     'not_started' => '#6c757d',
     'in_progress' => '#0d6efd',
     'completed' => '#198754',
+    'completed_closing' => '#20c997',
     'terminated_early' => '#ffc107',
     'cancelled' => '#dc3545',
 ];

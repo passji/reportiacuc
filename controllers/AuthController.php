@@ -13,34 +13,15 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
  * SSONext integration จริง (Phase 8) จะใช้ ตอนเปลี่ยนไปใช้ SSO จริงในอนาคตจะได้ไม่ต้องแก้ที่อื่น
  * (SecureController ฯลฯ เช็คแค่ session key เดียวกันนี้ ไม่สนว่ามาจากไหน)
  *
- * หมายเหตุ: เคยเอา mock login ออกไปแล้ว (เหลือ Google login ทางเดียว) แต่เปิดกลับมาชั่วคราวตามที่
- * ขอ — ให้เอาออกอีกครั้งเมื่อไม่ต้องใช้แล้ว (ดู actionLogin ด้านล่าง กับฟอร์มใน views/auth/login.php)
- * "Login ด้วย Google" (actionGoogle/actionGoogleCallback) เป็นทางเลือกที่สองคู่กับ mock login
- * ด้านบน ไม่ได้แทนที่แผน SSONext — เขียน session key เดียวกัน (sso_email/sso_name) จึงใช้ร่วมกับ
- * ส่วนอื่นของระบบ (SecureController ฯลฯ) ได้ทันทีโดยไม่ต้องแก้ที่อื่น อนุญาตทุกบัญชี Google ไม่จำกัด
- * โดเมน @kku.ac.th (ต่างจากอีเมลใน mock form ที่บังคับ @kku.ac.th)
+ * ตอนนี้มีทางเข้าเดียวคือ "Login ด้วย Google" (actionGoogle/actionGoogleCallback) — เดิมมี mock
+ * login แบบกรอกอีเมล @kku.ac.th เองไม่ตรวจสอบจริงคู่กันไว้สำหรับช่วงพัฒนา/ทดสอบ ตอนนี้เอาออกแล้ว
+ * เพราะใช้งานจริงแล้ว (อนุญาตทุกบัญชี Google ไม่จำกัดโดเมน @kku.ac.th)
  */
 class AuthController extends Controller
 {
     public function actionLogin()
     {
-        $model = new \yii\base\DynamicModel(['email']);
-        $model->addRule('email', 'required')
-              ->addRule('email', 'email')
-              ->addRule('email', 'match', [
-                  'pattern' => '/@kku\.ac\.th$/',
-                  'message' => 'อนุญาตเฉพาะอีเมล @kku.ac.th เท่านั้น',
-              ]);
-
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            Yii::$app->session->set('sso_email', $model->email);
-            Yii::$app->session->set('sso_name', explode('@', $model->email)[0]);
-
-            $returnUrl = Yii::$app->session->get('login_return_url', Yii::$app->homeUrl);
-            return $this->redirect($returnUrl);
-        }
-
-        return $this->render('login', ['model' => $model]);
+        return $this->render('login');
     }
 
     public function actionLogout()
@@ -62,7 +43,7 @@ class AuthController extends Controller
     {
         $provider = $this->buildGoogleProvider();
         if ($provider === null) {
-            Yii::$app->session->setFlash('error', 'ยังไม่ได้ตั้งค่า Google Login (GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET) กรุณาใช้ Mock Login ด้านล่างไปก่อน');
+            Yii::$app->session->setFlash('error', 'ยังไม่ได้ตั้งค่า Google Login (GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET) กรุณาติดต่อผู้ดูแลระบบ');
             return $this->redirect(['login']);
         }
 

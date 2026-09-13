@@ -1,9 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var yii\base\DynamicModel $model */
 
-use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 $this->title = 'เข้าสู่ระบบ';
@@ -31,41 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </svg>
                 SVG;
             ?>
-            <div class="d-grid mb-3">
+            <div class="d-grid">
                 <?= Html::a(
                     $googleIconSvg . 'เข้าสู่ระบบด้วย Google',
                     ['auth/google'],
                     ['class' => 'btn btn-outline-secondary d-flex align-items-center justify-content-center']
                 ) ?>
             </div>
-
-            <div class="d-flex align-items-center gap-2 my-3">
-                <hr class="flex-grow-1">
-                <span class="text-body-secondary small">หรือ</span>
-                <hr class="flex-grow-1">
-            </div>
-
-            <p class="text-body-secondary small mb-2">เข้าสู่ระบบด้วยอีเมล @kku.ac.th (Mock)</p>
-
-            <?php $form = ActiveForm::begin(['id' => 'auth-login-form']); ?>
-
-            <div class="mb-3">
-                <?= $form->field($model, 'email')->textInput([
-                    'class' => 'form-control',
-                    'placeholder' => 'name@kku.ac.th',
-                    'autofocus' => true,
-                ]) ?>
-            </div>
-
-            <div class="d-grid">
-                <?= Html::submitButton('เข้าสู่ระบบ (Mock)', ['class' => 'btn btn-primary']) ?>
-            </div>
-
-            <?php ActiveForm::end(); ?>
-
-            <p class="text-body-secondary small mt-3 mb-0">
-                โหมดนี้เป็น Mock Login ชั่วคราว ยังไม่ได้เชื่อมกับ KKU SSO จริง (ไม่ต้องกรอกรหัสผ่าน)
-            </p>
         </div>
     </div>
 </div>

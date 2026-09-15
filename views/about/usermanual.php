@@ -7,17 +7,51 @@ use yii\bootstrap5\Html;
 $this->title = 'คู่มือการใช้งานระบบ (สำหรับผู้ใช้งาน)';
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['meta_description'] = 'คู่มือการใช้งานระบบรายงานความก้าวหน้าโครงการวิจัยสำหรับหัวหน้าโครงการวิจัย';
+
+// ต่อ ?v=<เวลาแก้ไขไฟล์ล่าสุด> กัน browser แคช CSS นี้ค้างไว้หลัง deploy โค้ดใหม่ (เจอบั๊กเดียวกันนี้
+// กับไฟล์ JS ของหน้า report/create มาแล้ว — ดูคอมเมนต์อธิบายเต็มที่ views/report/create.php)
+$manualCssPath = Yii::getAlias('@webroot/css/manual-infographic.css');
+$manualCssVersion = is_file($manualCssPath) ? ('?v=' . filemtime($manualCssPath)) : '';
+$this->registerCssFile('@web/css/manual-infographic.css' . $manualCssVersion);
+
+$overviewSteps = [
+    ['icon' => 'fa-right-to-bracket', 'color' => '#4285F4', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยบัญชี Google'],
+    ['icon' => 'fa-link', 'color' => '#2E75B6', 'title' => 'เปิดฟอร์ม', 'caption' => 'จากลิงก์ที่ได้รับ'],
+    ['icon' => 'fa-pen-to-square', 'color' => '#20A162', 'title' => 'กรอกข้อมูล', 'caption' => 'ครบทั้ง 6 ข้อ'],
+    ['icon' => 'fa-square-check', 'color' => '#E0A800', 'title' => 'ตรวจสอบ', 'caption' => 'ติ๊กรับรอง 2 ข้อ'],
+    ['icon' => 'fa-paper-plane', 'color' => '#8E44AD', 'title' => 'ส่งรายงาน', 'caption' => 'ยืนยันและส่ง'],
+    ['icon' => 'fa-file-pdf', 'color' => '#C0392B', 'title' => 'ดูผล/PDF', 'caption' => 'ที่ "รายงานของฉัน"'],
+];
 ?>
 <div class="about-usermanual mx-auto" style="max-width: 900px;">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
         <h1 class="h4 fw-bold mb-0"><?= Html::encode($this->title) ?></h1>
         <?= Html::a('<i class="fas fa-user-shield me-1"></i>ดูคู่มือผู้ดูแลระบบ', ['about/adminmanual'], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
     </div>
 
-    <p class="text-body-secondary mb-4">
+    <p class="text-body-secondary mb-3">
         คู่มือนี้สำหรับหัวหน้าโครงการวิจัยที่ได้รับการรับรองจรรยาบรรณการดำเนินการต่อสัตว์เพื่องานทางวิทยาศาสตร์ (IACUC)
         ใช้ประกอบการส่งรายงานความก้าวหน้า/แจ้งปิดโครงการผ่านระบบนี้
     </p>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body pb-2">
+            <h2 class="h6 fw-bold text-uppercase text-body-secondary mb-0">ภาพรวมขั้นตอนการส่งรายงาน</h2>
+            <div class="step-flow">
+                <?php foreach ($overviewSteps as $i => $s): ?>
+                    <div class="step-card">
+                        <div class="step-icon" style="background: <?= $s['color'] ?>;"><i class="fas <?= $s['icon'] ?>"></i></div>
+                        <div class="step-num" style="color: <?= $s['color'] ?>;"><?= $i + 1 ?></div>
+                        <div class="step-title"><?= Html::encode($s['title']) ?></div>
+                        <div class="step-caption"><?= Html::encode($s['caption']) ?></div>
+                    </div>
+                    <?php if ($i < count($overviewSteps) - 1): ?>
+                        <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
 
     <h2 class="h5 fw-bold mt-4 mb-2">1. เกี่ยวกับระบบ</h2>
     <p>ระบบนี้ใช้สำหรับส่ง <strong>"รายงานความก้าวหน้า"</strong> หรือ <strong>"แจ้งปิดโครงการ"</strong> ตามรอบที่กำหนด แทนการกรอกเอกสารกระดาษแบบเดิม ข้อมูลพื้นฐานของโครงการ (ชื่อโครงการ ชื่อหัวหน้าโครงการ จำนวนสัตว์ที่ได้รับอนุมัติ ฯลฯ) จะถูกดึงมาจากระบบกลางของสำนักงานคณะกรรมการจริยธรรมการใช้สัตว์ในงานวิจัย (คกส.มข, ระบบ iacuc.kku.ac.th) โดยอัตโนมัติทุกครั้งที่เปิดฟอร์ม ผู้ใช้งานไม่ต้องกรอกข้อมูลเหล่านี้เอง</p>
@@ -63,20 +97,24 @@ $this->params['meta_description'] = 'คู่มือการใช้งา�
     <p>เลือกว่า "มีการเปลี่ยนแปลงวัตถุประสงค์ของโครงการหรือไม่" หากเลือก "มีการเปลี่ยนแปลงวัตถุประสงค์" จะมีช่องให้กรอกรายละเอียดการเปลี่ยนแปลงเพิ่มเติม (บังคับกรอก)</p>
 
     <h3 class="h6 fw-bold mt-3 mb-1">4.5 ข้อ 2.1 — สถานะการดำเนินโครงการ</h3>
-    <p>เลือกสถานะปัจจุบันของโครงการจากรายการ ระบบจะแสดงช่องกรอกที่เกี่ยวข้องเพิ่มเติมโดยอัตโนมัติตามสถานะที่เลือก ดังตาราง:</p>
-    <div class="table-responsive mb-3">
-        <table class="table table-sm table-bordered">
-            <thead class="table-light">
-            <tr><th>สถานะที่เลือก</th><th>ช่องที่ต้องกรอกเพิ่ม</th></tr>
-            </thead>
-            <tbody>
-            <tr><td>ยังไม่เริ่มดำเนินการ</td><td>วันที่คาดว่าจะเริ่มดำเนินการ และเหตุผลที่ยังไม่เริ่ม</td></tr>
-            <tr><td>อยู่ระหว่างดำเนินการ</td><td>วันที่คาดว่าจะเสร็จสิ้น</td></tr>
-            <tr><td>ดำเนินการเสร็จสิ้นและขอแจ้งปิดโครงการ</td><td>วันที่ดำเนินการเสร็จสิ้น</td></tr>
-            <tr><td>ยุติโครงการก่อนกำหนด</td><td>เหตุผลที่ยุติโครงการ</td></tr>
-            <tr><td>ยกเลิกโครงการ</td><td>เหตุผลที่ยกเลิกโครงการ</td></tr>
-            </tbody>
-        </table>
+    <p>เลือกสถานะปัจจุบันของโครงการจากรายการ ระบบจะแสดงช่องกรอกที่เกี่ยวข้องเพิ่มเติมโดยอัตโนมัติตามสถานะที่เลือก ดังนี้:</p>
+    <?php
+    $statusCards = [
+        ['icon' => 'fa-hourglass-start', 'color' => '#6c757d', 'title' => 'ยังไม่เริ่มดำเนินการ', 'extra' => 'วันที่คาดว่าจะเริ่ม + เหตุผล'],
+        ['icon' => 'fa-person-running', 'color' => '#0d6efd', 'title' => 'อยู่ระหว่างดำเนินการ', 'extra' => 'วันที่คาดว่าจะเสร็จสิ้น'],
+        ['icon' => 'fa-circle-check', 'color' => '#198754', 'title' => 'เสร็จสิ้นและขอแจ้งปิดโครงการ', 'extra' => 'วันที่ดำเนินการเสร็จสิ้น'],
+        ['icon' => 'fa-circle-stop', 'color' => '#e0a800', 'title' => 'ยุติโครงการก่อนกำหนด', 'extra' => 'เหตุผลที่ยุติโครงการ'],
+        ['icon' => 'fa-ban', 'color' => '#dc3545', 'title' => 'ยกเลิกโครงการ', 'extra' => 'เหตุผลที่ยกเลิกโครงการ'],
+    ];
+    ?>
+    <div class="status-card-grid">
+        <?php foreach ($statusCards as $sc): ?>
+            <div class="status-card">
+                <div class="status-icon" style="background: <?= $sc['color'] ?>;"><i class="fas <?= $sc['icon'] ?>"></i></div>
+                <div class="status-title"><?= Html::encode($sc['title']) ?></div>
+                <div class="status-extra">+ <?= Html::encode($sc['extra']) ?></div>
+            </div>
+        <?php endforeach; ?>
     </div>
     <div class="alert alert-info">
         ช่องกรอกวันที่ทุกช่องในระบบใช้รูปแบบไทย วว/ดด/ปปปป (พุทธศักราช) เช่น 01/12/2569 — สามารถพิมพ์เองตามรูปแบบนี้ หรือกดที่ช่องเพื่อเปิดปฏิทินแล้วเลือกวันที่ได้เลย
@@ -123,13 +161,36 @@ $this->params['meta_description'] = 'คู่มือการใช้งา�
 
     <h2 class="h5 fw-bold mt-4 mb-2">5. การตรวจสอบข้อมูลก่อนส่งรายงาน</h2>
     <p>เมื่อกรอกข้อมูลครบถ้วนแล้ว กดปุ่ม "ส่งรายงาน" ท้ายแบบฟอร์ม ระบบจะทำงานดังนี้:</p>
-    <ol>
-        <li>ระบบตรวจสอบว่ากรอกข้อมูลในช่องที่จำเป็นครบถ้วนหรือไม่ หากยังไม่ครบ จะแสดงข้อความสีแดงใต้ช่องนั้น ๆ ให้แก้ไขก่อน</li>
-        <li>เมื่อข้อมูลครบถ้วน ระบบจะแสดงหน้าต่าง "ตรวจสอบข้อมูลก่อนส่งรายงาน" ขึ้นมา สรุปข้อมูลทั้งหมดที่กรอกไว้ในแบบฟอร์มให้ตรวจทานอีกครั้ง</li>
-        <li>อ่านข้อความ "ท่านได้ตรวจสอบความถูกต้องเรียบร้อยแล้ว ทุกอย่างถือเป็นความรับผิดชอบของท่าน" และติ๊กเครื่องหมายถูกให้ครบทั้ง 2 ข้อ ได้แก่ (1) ข้าพเจ้าขอรับรองข้อมูลที่นำเข้าระบบทั้งหมด และ (2) ข้าพเจ้าขอรับรองว่าข้อมูลทั้งหมดเป็นความจริงทุกประการ</li>
-        <li>เมื่อติ๊กครบทั้ง 2 ข้อแล้ว ปุ่ม "ยืนยันและส่งรายงาน" จะกดได้ (ก่อนหน้านั้นปุ่มจะเป็นสีจาง กดไม่ได้)</li>
-        <li>กดปุ่ม "ยืนยันและส่งรายงาน" เพื่อส่งรายงานเข้าสู่ระบบจริง</li>
-    </ol>
+    <div class="timeline-steps">
+        <div class="timeline-item">
+            <div class="timeline-dot">1</div>
+            <div class="timeline-body">ระบบตรวจสอบว่ากรอกข้อมูลในช่องที่จำเป็นครบถ้วนหรือไม่ หากยังไม่ครบ จะแสดงข้อความสีแดงใต้ช่องนั้น ๆ ให้แก้ไขก่อน</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot">2</div>
+            <div class="timeline-body">เมื่อข้อมูลครบถ้วน ระบบจะแสดงหน้าต่าง <strong>"ตรวจสอบข้อมูลก่อนส่งรายงาน"</strong> ขึ้นมา สรุปข้อมูลทั้งหมดที่กรอกไว้ในแบบฟอร์มให้ตรวจทานอีกครั้ง</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot">3</div>
+            <div class="timeline-body">
+                <p class="mb-2">อ่านข้อความ "ท่านได้ตรวจสอบความถูกต้องเรียบร้อยแล้ว ทุกอย่างถือเป็นความรับผิดชอบของท่าน" แล้วติ๊กเครื่องหมายถูกให้ครบทั้ง 2 ข้อ:</p>
+                <div class="checklist-highlight">
+                    <div class="form-check">
+                        <i class="fas fa-square-check text-primary position-absolute" style="left:.65rem; top:.75rem;"></i>
+                        ข้าพเจ้าขอรับรองข้อมูลที่นำเข้าระบบทั้งหมด
+                    </div>
+                    <div class="form-check mb-0">
+                        <i class="fas fa-square-check text-primary position-absolute" style="left:.65rem; top:.75rem;"></i>
+                        ข้าพเจ้าขอรับรองว่าข้อมูลทั้งหมด เป็นความจริงทุกประการ
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="timeline-item mb-0">
+            <div class="timeline-dot"><i class="fas fa-paper-plane"></i></div>
+            <div class="timeline-body">เมื่อติ๊กครบทั้ง 2 ข้อแล้ว ปุ่ม <strong>"ยืนยันและส่งรายงาน"</strong> จะกดได้ (ก่อนหน้านั้นปุ่มจะเป็นสีจาง กดไม่ได้) — กดเพื่อส่งรายงานเข้าสู่ระบบจริง</div>
+        </div>
+    </div>
     <div class="alert alert-info">
         หากต้องการกลับไปแก้ไขข้อมูลก่อนส่งจริง ให้กดปุ่ม "กลับไปแก้ไข" หรือปุ่มปิด (X) มุมขวาบนของหน้าต่าง ข้อมูลที่กรอกไว้ในแบบฟอร์มจะยังคงอยู่ครบ
     </div>

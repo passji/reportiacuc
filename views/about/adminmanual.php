@@ -7,14 +7,47 @@ use yii\bootstrap5\Html;
 $this->title = 'คู่มือการใช้งานระบบ (สำหรับผู้ดูแลระบบ)';
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['meta_description'] = 'คู่มือการใช้งานระบบรายงานความก้าวหน้าโครงการวิจัยสำหรับผู้ดูแลระบบ (Admin)';
+
+// ต่อ ?v=<เวลาแก้ไขไฟล์ล่าสุด> กัน browser แคช CSS นี้ค้างไว้หลัง deploy โค้ดใหม่ (เจอบั๊กเดียวกันนี้
+// กับไฟล์ JS ของหน้า report/create มาแล้ว — ดูคอมเมนต์อธิบายเต็มที่ views/report/create.php)
+$manualCssPath = Yii::getAlias('@webroot/css/manual-infographic.css');
+$manualCssVersion = is_file($manualCssPath) ? ('?v=' . filemtime($manualCssPath)) : '';
+$this->registerCssFile('@web/css/manual-infographic.css' . $manualCssVersion);
+
+$overviewSteps = [
+    ['icon' => 'fa-right-to-bracket', 'color' => '#4285F4', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยอีเมล Admin'],
+    ['icon' => 'fa-clipboard-check', 'color' => '#20A162', 'title' => 'ตรวจรายงาน', 'caption' => 'อนุมัติ / ปฏิเสธ'],
+    ['icon' => 'fa-envelope-open-text', 'color' => '#E0A800', 'title' => 'แจ้งเตือน', 'caption' => 'ส่งอีเมล/ตั้งรอบอัตโนมัติ'],
+    ['icon' => 'fa-gauge-high', 'color' => '#2E75B6', 'title' => 'ดูภาพรวม', 'caption' => 'Dashboard/สถิติ'],
+    ['icon' => 'fa-user-shield', 'color' => '#8E44AD', 'title' => 'จัดการสิทธิ์', 'caption' => 'เพิ่ม/ลบ Admin'],
+];
 ?>
 <div class="about-adminmanual mx-auto" style="max-width: 900px;">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
         <h1 class="h4 fw-bold mb-0"><?= Html::encode($this->title) ?></h1>
         <?= Html::a('<i class="fas fa-user me-1"></i>ดูคู่มือผู้ใช้งาน', ['about/usermanual'], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
     </div>
 
-    <p class="text-body-secondary mb-4">คู่มือนี้สำหรับผู้ดูแลระบบ (Admin) อธิบายเมนูและฟีเจอร์ที่เห็นเฉพาะเมื่อเข้าสู่ระบบด้วยอีเมลที่มีสิทธิ์ผู้ดูแลระบบ</p>
+    <p class="text-body-secondary mb-3">คู่มือนี้สำหรับผู้ดูแลระบบ (Admin) อธิบายเมนูและฟีเจอร์ที่เห็นเฉพาะเมื่อเข้าสู่ระบบด้วยอีเมลที่มีสิทธิ์ผู้ดูแลระบบ</p>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body pb-2">
+            <h2 class="h6 fw-bold text-uppercase text-body-secondary mb-0">ภาพรวมงานของผู้ดูแลระบบ</h2>
+            <div class="step-flow">
+                <?php foreach ($overviewSteps as $i => $s): ?>
+                    <div class="step-card">
+                        <div class="step-icon" style="background: <?= $s['color'] ?>;"><i class="fas <?= $s['icon'] ?>"></i></div>
+                        <div class="step-num" style="color: <?= $s['color'] ?>;"><?= $i + 1 ?></div>
+                        <div class="step-title"><?= Html::encode($s['title']) ?></div>
+                        <div class="step-caption"><?= Html::encode($s['caption']) ?></div>
+                    </div>
+                    <?php if ($i < count($overviewSteps) - 1): ?>
+                        <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
 
     <h2 class="h5 fw-bold mt-4 mb-2">1. เกี่ยวกับสิทธิ์ผู้ดูแลระบบ</h2>
     <p>สิทธิ์ผู้ดูแลระบบ (Admin) กำหนดจาก "อีเมล" ของผู้ใช้งานที่อยู่ในรายชื่อผู้ดูแลระบบเท่านั้น ไม่เกี่ยวข้องกับสิทธิ์อื่นใดในระบบ Google — จัดการรายชื่อได้ที่เมนู "ตั้งค่า ADMIN" (ดูบทที่ 8)</p>
@@ -50,11 +83,36 @@ $this->params['meta_description'] = 'คู่มือการใช้งา�
     <div class="alert alert-info">
         การอนุมัติและปฏิเสธไม่ได้ทำในหน้าตารางนี้ — ต้องกดปุ่ม "ดูรายละเอียด" เพื่อเข้าไปที่หน้ารายงานฉบับนั้นก่อน จึงจะเห็นปุ่มดำเนินการ
     </div>
-    <ol>
-        <li>เปิด "ดูรายละเอียด" ของรายงานที่ต้องการตรวจสอบ อ่านข้อมูลทั้งหมดที่ผู้ใช้กรอกไว้</li>
-        <li>หากข้อมูลถูกต้องครบถ้วน กดปุ่ม "อนุมัติ / ตรวจแล้ว" แล้วยืนยันในกล่องข้อความที่ปรากฏขึ้น</li>
-        <li>หากข้อมูลไม่ถูกต้องหรือไม่ครบถ้วน กดปุ่ม "ปฏิเสธ" — ระบบจะบังคับให้กรอก "เหตุผลที่ปฏิเสธ" ก่อนเสมอ (ช่องนี้เป็นช่องบังคับ ไม่กรอกจะกดยืนยันไม่ได้)</li>
-    </ol>
+    <div class="timeline-steps">
+        <div class="timeline-item mb-3">
+            <div class="timeline-dot">1</div>
+            <div class="timeline-body">เปิด "ดูรายละเอียด" ของรายงานที่ต้องการตรวจสอบ อ่านข้อมูลทั้งหมดที่ผู้ใช้กรอกไว้</div>
+        </div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #198754 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-success text-white" style="width:2.25rem;height:2.25rem;flex-shrink:0;"><i class="fas fa-check"></i></div>
+                        <span class="fw-bold text-success">ข้อมูลถูกต้อง → อนุมัติ</span>
+                    </div>
+                    <p class="small mb-0">กดปุ่ม "อนุมัติ / ตรวจแล้ว" แล้วยืนยันในกล่องข้อความที่ปรากฏขึ้น เสร็จแล้วทันที ไม่มีอีเมลส่งออก</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #dc3545 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-danger text-white" style="width:2.25rem;height:2.25rem;flex-shrink:0;"><i class="fas fa-xmark"></i></div>
+                        <span class="fw-bold text-danger">ข้อมูลไม่ถูกต้อง → ปฏิเสธ</span>
+                    </div>
+                    <p class="small mb-0">กดปุ่ม "ปฏิเสธ" — ระบบบังคับให้กรอก "เหตุผลที่ปฏิเสธ" ก่อนเสมอ (ช่องบังคับ) ยืนยันไม่ได้ถ้าไม่กรอก</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="alert alert-danger">
         <strong>สำคัญ:</strong> เมื่อกดปฏิเสธและกรอกเหตุผลสำเร็จ ระบบจะส่งอีเมลแจ้งเหตุผลไปยังผู้ส่งรายงาน (submitted_by_email) โดยอัตโนมัติทันที ไม่ต้องส่งอีเมลแจ้งเองซ้ำอีก — ควรกรอกเหตุผลให้ชัดเจนเนื่องจากผู้ส่งจะเห็นข้อความนี้โดยตรง
     </div>
@@ -121,15 +179,21 @@ $this->params['meta_description'] = 'คู่มือการใช้งา�
     </div>
 
     <h3 class="h6 fw-bold mt-3 mb-1">7.4 สถานะของแต่ละรอบ</h3>
-    <div class="table-responsive mb-3">
-        <table class="table table-sm table-bordered">
-            <thead class="table-light"><tr><th>สถานะ</th><th>ความหมาย</th></tr></thead>
-            <tbody>
-            <tr><td>รอถึงกำหนด</td><td>ยังไม่ถึงวันที่ส่งอีเมลแจ้งเตือนที่ตั้งไว้</td></tr>
-            <tr><td>ถึงกำหนดแล้ว รอ cron</td><td>ถึงวันที่กำหนดแล้ว แต่ยังไม่ถึงรอบเวลาที่ตัวจับเวลาอัตโนมัติจะทำงาน (09:00 น.)</td></tr>
-            <tr><td>ส่งแล้ว</td><td>ส่งเรียบร้อยแล้ว พร้อมจำนวนที่สำเร็จ/ล้มเหลว</td></tr>
-            </tbody>
-        </table>
+    <?php
+    $cycleStatusCards = [
+        ['icon' => 'fa-clock', 'color' => '#6c757d', 'title' => 'รอถึงกำหนด', 'extra' => 'ยังไม่ถึงวันที่ส่งอีเมลแจ้งเตือนที่ตั้งไว้'],
+        ['icon' => 'fa-hourglass-half', 'color' => '#e0a800', 'title' => 'ถึงกำหนดแล้ว รอ cron', 'extra' => 'ถึงวันที่กำหนดแล้ว รอถึงรอบเวลา 09:00 น.'],
+        ['icon' => 'fa-circle-check', 'color' => '#198754', 'title' => 'ส่งแล้ว', 'extra' => 'ส่งเรียบร้อยแล้ว พร้อมจำนวนสำเร็จ/ล้มเหลว'],
+    ];
+    ?>
+    <div class="status-card-grid mb-3">
+        <?php foreach ($cycleStatusCards as $cs): ?>
+            <div class="status-card">
+                <div class="status-icon" style="background: <?= $cs['color'] ?>;"><i class="fas <?= $cs['icon'] ?>"></i></div>
+                <div class="status-title"><?= Html::encode($cs['title']) ?></div>
+                <div class="status-extra"><?= Html::encode($cs['extra']) ?></div>
+            </div>
+        <?php endforeach; ?>
     </div>
     <div class="alert alert-warning">
         รอบที่มีสถานะ "ส่งแล้ว" จะไม่สามารถแก้ไขหรือลบได้อีก (เก็บไว้เป็นประวัติถาวรเพื่อการตรวจสอบย้อนหลัง) รอบที่ยังไม่ส่งเท่านั้นที่ลบได้ (มีกล่องยืนยันก่อนลบ)

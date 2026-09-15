@@ -30,7 +30,12 @@ $staffToolsItems = [
     ['label' => 'ตั้งค่า ADMIN', 'icon' => 'fa-user-shield', 'url' => ['/admin/settings'], 'route' => 'admin/settings'],
 ];
 $infoItems = [
-    ['label' => 'About', 'icon' => 'fa-circle-info', 'url' => ['/site/about'], 'route' => 'site/about'],
+    ['label' => 'About', 'icon' => 'fa-circle-info', 'url' => ['/site/about'], 'route' => 'site/about', 'visible' => true],
+    ['label' => 'คู่มือผู้ใช้งาน', 'icon' => 'fa-book', 'url' => ['/about/usermanual'], 'route' => 'about/usermanual', 'visible' => true],
+    // คู่มือผู้ดูแลระบบโชว์เฉพาะ admin — เนื้อหาเป็นแค่คำอธิบายวิธีใช้เมนู ไม่มีข้อมูลลับ แต่ไม่มี
+    // ประโยชน์กับผู้ใช้ทั่วไปที่มองไม่เห็นเมนูที่พูดถึงอยู่แล้ว ซ่อนไว้กันสับสน (route เองไม่ได้ล็อกสิทธิ์
+    // ถ้ามีลิงก์ตรงก็เปิดดูได้อยู่ดี แค่ไม่โชว์ในเมนูเฉยๆ)
+    ['label' => 'คู่มือผู้ดูแลระบบ', 'icon' => 'fa-book-open', 'url' => ['/about/adminmanual'], 'route' => 'about/adminmanual', 'visible' => $isAdmin],
 ];
 
 ?>
@@ -76,6 +81,9 @@ $infoItems = [
     <hr class="sidebar-divider">
 
     <?php foreach ($infoItems as $item): ?>
+        <?php if (!$item['visible']) {
+            continue;
+        } ?>
         <li class="nav-item<?= $route === $item['route'] ? ' active' : '' ?>">
             <?= Html::a(
                 '<i class="fas fa-fw ' . $item['icon'] . '"></i><span>' . Html::encode($item['label']) . '</span>',

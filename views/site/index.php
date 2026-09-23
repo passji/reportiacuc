@@ -15,7 +15,7 @@ $isLoggedIn = !empty(Yii::$app->session->get('sso_email'));
         <div class="position-relative">
             <h1 class="display-6 fw-bold mb-3"><?= Html::encode($this->title) ?></h1>
             <p class="lead opacity-75 mb-4 hero-lead">
-                ศูนย์สัตว์ทดลองภาคตะวันออกเฉียงเหนือ มหาวิทยาลัยขอนแก่น
+                ศูนย์กำกับกับดูแลการดำเนินการต่อสัตว์เพื่องานทางวิทยาศาสตร์ มหาวิทยาลัยขอนแก่น
             </p>
             <div class="d-flex gap-2 flex-wrap">
                 <?php if ($isLoggedIn): ?>

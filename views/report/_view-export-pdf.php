@@ -57,13 +57,16 @@ $redLabels = ['ส่งรายงานโดย', 'วันที่ส่�
     .label-green { color: #0a3622; font-weight: bold; }
     .label-red { color: #e74a3b; font-weight: bold; }
     .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; color: #fff; font-size: 9pt; }
+    .pdf-header-logo { float: left; width: 48pt; margin-right: 10pt; }
 </style>
 
+<img class="pdf-header-logo" src="<?= Html::encode(Yii::getAlias('@webroot/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC">
 <h1><?= Html::encode('รายงานความก้าวหน้าโครงการ #' . $model->id) ?></h1>
 <div class="subtitle">
     ลำดับที่อ้างอิง oid: <?= Html::encode($model->oid) ?>
     &nbsp;|&nbsp; พิมพ์เมื่อ <?= Html::encode(ThaiDate::format(date('Y-m-d H:i:s'))) ?>
 </div>
+<div style="clear: both;"></div>
 
 <?php if ($project): ?>
     <h2>ข้อมูลโครงการ</h2>

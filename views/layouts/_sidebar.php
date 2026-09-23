@@ -41,11 +41,14 @@ $infoItems = [
 ?>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(Yii::$app->homeUrl)) ?>">
-        <div class="sidebar-brand-icon">
-            <i class="fas fa-notes-medical"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">IACUC</div>
+    <?php
+    // โลโก้เต็ม (มีข้อความ SuMoACUC / KHON KAEN UNIVERSITY ในภาพ) ห้าม crop ตามที่ขอ — เลยไม่ใช้
+    // โครงสร้าง icon+text แยกกันแบบเดิมของ sb-admin-2 (ซึ่งจะซ่อน text ตอน sidebar ย่อ) อีกต่อไป เพราะ
+    // ข้อความอยู่ในรูปเดียวกันหมดแล้ว ปรับ padding ของ .sidebar-brand เองแทน (ค่า default 1.5rem
+    // แนวตั้งแคบไปสำหรับโลโก้ทรงสูงนี้ ถ้าไม่ปรับภาพจะถูกบีบ/ล้นกรอบ)
+    ?>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(Yii::$app->homeUrl)) ?>" style="height: auto; padding: 0.6rem 0.5rem;">
+        <img src="<?= Html::encode(Yii::getAlias('@web/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC — Supervision &amp; Monitoring on Animal Care and Use Center, Khon Kaen University" style="height: 3.5rem; width: auto; max-width: 100%;">
     </a>
 
     <hr class="sidebar-divider my-0">

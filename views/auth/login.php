@@ -10,8 +10,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="auth-login d-flex align-items-center justify-content-center py-5">
     <div class="card border-0 shadow-sm" style="max-width: 420px; width: 100%;">
         <div class="card-body p-4 p-lg-5">
-            <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>
-            <p class="text-body-secondary small mb-4">
+            <div class="text-center mb-3">
+                <img src="<?= Html::encode(Yii::getAlias('@web/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC — Supervision &amp; Monitoring on Animal Care and Use Center, Khon Kaen University" style="height: 9rem; width: auto; max-width: 100%;">
+            </div>
+            <h1 class="h4 fw-bold mb-1 text-center"><?= Html::encode($this->title) ?></h1>
+            <p class="text-body-secondary small mb-4 text-center">
                 ระบบรายงานความก้าวหน้าโครงการวิจัย (IACUC)
             </p>
 

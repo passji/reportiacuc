@@ -51,6 +51,9 @@ $adminContacts = [
 ];
 ?>
 <div class="mx-auto" style="max-width: 860px;">
+    <div class="text-center mb-4">
+        <img src="<?= Html::encode(Yii::getAlias('@web/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC — Supervision &amp; Monitoring on Animal Care and Use Center, Khon Kaen University" style="height: 11rem; width: auto; max-width: 100%;">
+    </div>
     <h2 class="h4 fw-bold mb-2">วัตถุประสงค์ของการรายงานความก้าวหน้าโครงการ</h2>
     <p class="text-body-secondary mb-4">
         การรายงานความก้าวหน้าโครงการเลี้ยงและใช้สัตว์เพื่องานทางวิทยาศาสตร์ มีวัตถุประสงค์ดังนี้

@@ -16,7 +16,7 @@
                     showCancelButton: true,
                     confirmButtonText: 'ยืนยัน',
                     cancelButtonText: 'ยกเลิก',
-                    confirmButtonColor: '#4f46e5',
+                    confirmButtonColor: '#1565c0',
                     cancelButtonColor: '#858796',
                     reverseButtons: true,
                 }).then(function (result) {

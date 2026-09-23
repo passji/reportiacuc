@@ -26,7 +26,7 @@ $piName = $report->pi_name ?: 'หัวหน้าโครงการ';
 
 <p style="margin:20px 0;">
     <a href="<?= Html::encode($link) ?>"
-       style="background-color:#83C933;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
+       style="background-color:#1565c0;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
         ส่งรายงานความก้าวหน้าโครงการใหม่
     </a>
     <br>

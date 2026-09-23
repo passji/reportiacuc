@@ -167,11 +167,105 @@ a.desc:after {
     border-bottom: none;
 }
 
-/* sidebar gradient override — replaces sb-admin-2's default blue (#4e73df→#224abe)
-   with the purple-to-teal brand gradient; site.css loads after sb-admin-2.css so
-   this wins without touching the vendor file */
+/* ===== โทนสีหลักของระบบ: น้ำเงิน – ฟ้า – ขาว =====
+   เขียนทับค่า indigo/ม่วงเดิมที่ตั้งไว้ท้ายไฟล์ vendor/sb-admin-2.css (และสี SB Admin เดิม #4e73df)
+   ให้เป็นชุดสีน้ำเงิน/ฟ้าชุดเดียวทั้งระบบ — site.css โหลดหลัง sb-admin-2.css จึงชนะได้โดยไม่ต้องแก้ไฟล์
+   vendor (จุดที่ vendor ใส่ !important ไว้ต้องใส่ !important ซ้ำด้วยถึงจะทับได้)
+   สีสถานะ (เขียว/เหลือง/แดง ของ badge/สถานะโครงการ) คงเดิมโดยตั้งใจ เพราะสื่อความหมายเชิงสถานะ
+   ไม่ใช่สีแบรนด์ */
+:root {
+    --brand-navy: #0d47a1;
+    --brand-blue: #1565c0;
+    --brand-sky: #42a5f5;
+    --brand-sky-light: #90caf9;
+    --brand-tint: #e3f2fd;
+
+    --bs-primary: #1565c0;
+    --bs-primary-rgb: 21, 101, 192;
+    --bs-link-color-rgb: 21, 101, 192;
+    --bs-link-hover-color-rgb: 13, 71, 161;
+}
+
+/* โหมดมืด: น้ำเงินเข้ม #1565c0 บนพื้นเข้มอ่านยาก ใช้ฟ้าอ่อนขึ้นสำหรับลิงก์/ข้อความ/ขอบปุ่ม outline */
+[data-bs-theme="dark"] {
+    --bs-link-color-rgb: 100, 181, 246;
+    --bs-link-hover-color-rgb: 144, 202, 249;
+}
+
+.text-primary {
+    color: #1565c0 !important;
+}
+
+a.text-primary:hover,
+a.text-primary:focus {
+    color: #0d47a1 !important;
+}
+
+[data-bs-theme="dark"] .text-primary {
+    color: #64b5f6 !important;
+}
+
+[data-bs-theme="dark"] a.text-primary:hover,
+[data-bs-theme="dark"] a.text-primary:focus {
+    color: #90caf9 !important;
+}
+
+.border-left-primary {
+    border-left: 0.25rem solid #1565c0 !important;
+}
+
+.border-bottom-primary {
+    border-bottom: 0.25rem solid #1565c0 !important;
+}
+
+.topbar .dropdown-list .dropdown-header {
+    background-color: #1565c0;
+    border: 1px solid #1565c0;
+}
+
+.btn-primary {
+    --bs-btn-bg: #1565c0;
+    --bs-btn-border-color: #1565c0;
+    --bs-btn-hover-bg: #0d47a1;
+    --bs-btn-hover-border-color: #0d47a1;
+    --bs-btn-active-bg: #0a3a82;
+    --bs-btn-active-border-color: #0a3a82;
+    --bs-btn-disabled-bg: #1565c0;
+    --bs-btn-disabled-border-color: #1565c0;
+    --bs-btn-focus-shadow-rgb: 66, 165, 245;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #1565c0;
+    --bs-btn-border-color: #1565c0;
+    --bs-btn-hover-bg: #1565c0;
+    --bs-btn-hover-border-color: #1565c0;
+    --bs-btn-active-bg: #1565c0;
+    --bs-btn-active-border-color: #1565c0;
+    --bs-btn-focus-shadow-rgb: 66, 165, 245;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+    --bs-btn-color: #64b5f6;
+    --bs-btn-border-color: #64b5f6;
+}
+
+.form-check-input:checked {
+    background-color: #1565c0;
+    border-color: #1565c0;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #90caf9;
+    box-shadow: 0 0 0 0.25rem rgba(66, 165, 245, 0.25);
+}
+
+/* sidebar gradient: น้ำเงินเข้ม → น้ำเงิน → ฟ้า (ข้อความ/ไอคอนใน sidebar เป็นสีขาว รายการเมนูอยู่
+   ช่วงบนของ gradient ที่ยังเข้มพอให้ตัวหนังสืออ่านชัด ส่วนล่างที่อ่อนสุดมีแค่ปุ่ม toggle วงกลม) */
 .bg-gradient-primary {
-    background-image: linear-gradient(180deg, #6446e5 10%, #30a39b 100%);
+    background-color: #1565c0;
+    background-image: linear-gradient(180deg, #0d47a1 0%, #1565c0 45%, #42a5f5 100%);
 }
 
 /* footer logo: light logo by default (light bg-body-tertiary), dark logo for dark theme */
@@ -269,7 +363,7 @@ a.desc:after {
 }
 
 .login-brand-panel {
-    background: linear-gradient(135deg, #40B3D8 0%, #3a9cbd 40%, #83C933 100%);
+    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 50%, #42a5f5 100%);
     position: relative;
     min-height: 480px;
 }
@@ -279,13 +373,13 @@ a.desc:after {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 20% 80%, rgba(241, 138, 42, .25) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(131, 201, 51, .2) 0%, transparent 40%);
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, .16) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(144, 202, 249, .25) 0%, transparent 40%);
     pointer-events: none;
 }
 
 .login-btn {
-    background: linear-gradient(135deg, #40B3D8, #3a9cbd);
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
     border: none;
     font-weight: 600;
     letter-spacing: .02em;
@@ -371,7 +465,7 @@ a.desc:after {
 
 /* hero banner */
 .hero-banner {
-    background: linear-gradient(135deg, #83C933 0%, #3a9cbd 40%, #40B3D8 100%);
+    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 45%, #42a5f5 100%);
     position: relative;
 }
 
@@ -385,20 +479,20 @@ a.desc:after {
     inset: 0;
     border-radius: inherit;
     background:
-        radial-gradient(circle at 15% 85%, rgba(241, 138, 42, .3) 0%, transparent 45%),
-        radial-gradient(circle at 85% 15%, rgba(131, 201, 51, .25) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 50%, rgba(64, 179, 216, .15) 0%, transparent 60%);
+        radial-gradient(circle at 15% 85%, rgba(255, 255, 255, .18) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(179, 229, 252, .30) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(144, 202, 249, .15) 0%, transparent 60%);
     pointer-events: none;
 }
 
 /* extension cards */
-/* hover สีเขียวอ่อนบนทุกแถวของทุกตารางในระบบ (ไม่ต้องใส่ class .table-hover ทีละหน้า) — ใช้กลไก
+/* hover สีฟ้าอ่อน (เดิมเขียวอ่อน — เปลี่ยนตามโทนน้ำเงิน–ฟ้า–ขาวของทั้งระบบ) บนทุกแถวของทุกตารางในระบบ (ไม่ต้องใส่ class .table-hover ทีละหน้า) — ใช้กลไก
    ตัวแปร CSS เดียวกับที่ Bootstrap 5.3 ใช้กับ .table-hover เอง (--bs-table-bg-state ผ่าน inset
    box-shadow) แค่ผูกกับ .table เฉย ๆ แทนที่จะต้องมี .table-hover ถึงจะทำงาน — ใช้ rgba โปร่งแสงจึง
    เข้ากับพื้นหลังเดิมได้ทั้งโหมดสว่าง/มืดโดยไม่ต้อง override แยกสี */
 .table > tbody > tr:hover > * {
     --bs-table-color-state: var(--bs-emphasis-color);
-    --bs-table-bg-state: rgba(25, 135, 84, .18);
+    --bs-table-bg-state: rgba(66, 165, 245, .18);
 }
 
 /* dashboard/index: แถบสัดส่วนแนวนอน (segmented bar) + legend กริด 2 คอลัมน์ ใช้แทน pie/doughnut chart

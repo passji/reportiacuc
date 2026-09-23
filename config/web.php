@@ -29,6 +29,13 @@ $config = [
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],
+        // ต่อ ?v=<เวลาแก้ไขไฟล์> ให้ไฟล์ CSS/JS ของ asset bundle ทุกตัว (เช่น css/site.css ของ AppAsset)
+        // อัตโนมัติ — เดิมไม่มี เลยเจอปัญหา browser/reverse-proxy แคชไฟล์เก่าค้างหลัง deploy (เช่น เปลี่ยน
+        // สีธีมแล้วผู้ใช้ยังเห็นสีเดิม) ไฟล์ที่ register เองด้วย registerJsFile/registerCssFile ต้องต่อ
+        // ?v= เองเหมือนเดิม (ดู views/report/create.php) เพราะ option นี้มีผลเฉพาะไฟล์ใน AssetBundle
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'user' => [
             'identityClass' => \app\models\User::class,
             'enableAutoLogin' => true,

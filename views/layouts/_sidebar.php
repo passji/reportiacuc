@@ -48,7 +48,7 @@ $infoItems = [
     // แนวตั้งแคบไปสำหรับโลโก้ทรงสูงนี้ ถ้าไม่ปรับภาพจะถูกบีบ/ล้นกรอบ)
     ?>
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= Html::encode(Url::to(Yii::$app->homeUrl)) ?>" style="height: auto; padding: 0.6rem 0.5rem;">
-        <img src="<?= Html::encode(Yii::getAlias('@web/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC — Supervision &amp; Monitoring on Animal Care and Use Center, Khon Kaen University" style="height: 3.5rem; width: auto; max-width: 100%;">
+        <img src="<?= Html::encode(Yii::getAlias('@web/images/logo/sumoacuc-logo.png')) ?>" alt="SuMoACUC — Supervision &amp; Monitoring on Animal Care and Use Center, Khon Kaen University" style=" width: auto; max-width: 100%;">
     </a>
 
     <hr class="sidebar-divider my-0">

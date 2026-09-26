@@ -27,6 +27,26 @@ use Mpdf\Output\Destination;
 
 class ReportController extends SecureController
 {
+    /** ขนาดสูงสุดต่อไฟล์แนบ (ทั้ง attachments[] และไฟล์แนบรายข้อ 6.1/6.2) — ต้องไม่เกิน upload_max_filesize ใน docker/php/uploads.ini */
+    public const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+
+    /**
+     * rule ของ FileValidator ชุดเดียวกันทุกจุดที่ตรวจไฟล์ PDF แนบ — แปลข้อความ error เป็นไทยเอง
+     * (default ของ Yii เป็นภาษาอังกฤษ) ตัวแปร {file}/{formattedLimit} Yii แทนค่าให้เอง
+     */
+    private static function pdfFileRule(array $extra = []): array
+    {
+        return array_merge([
+            'extensions' => 'pdf',
+            'mimeTypes' => 'application/pdf',
+            'checkExtensionByMimeType' => true,
+            'maxSize' => self::MAX_UPLOAD_BYTES,
+            'tooBig' => 'ไฟล์ "{file}" มีขนาดใหญ่เกินกำหนด (ต้องไม่เกิน {formattedLimit})',
+            'tooMany' => 'แนบไฟล์ได้ไม่เกิน {limit} ไฟล์',
+            'wrongExtension' => 'ไฟล์ "{file}" ไม่ใช่ PDF (รองรับเฉพาะนามสกุล .pdf)',
+            'wrongMimeType' => 'ไฟล์ "{file}" ไม่ใช่ไฟล์ PDF จริง',
+        ], $extra);
+    }
 
     public function actionIndex()
     {
@@ -195,6 +215,18 @@ class ReportController extends SecureController
         $ipFilings = [new ReportIpFiling()];
         $attachmentErrors = [];
 
+        // ถ้าขนาดรวมของทั้ง request เกิน post_max_size PHP จะทิ้ง $_POST/$_FILES ทั้งหมดเงียบๆ (ไม่มี error
+        // ให้จับ) ฟอร์มจะโหลดกลับมาว่างเหมือนไม่ได้ส่งอะไร — ตรวจจากสัญญาณนี้ (POST ที่ไม่ว่างตามหัว
+        // CONTENT_LENGTH แต่ได้ข้อมูลกลับมาเป็นศูนย์) แล้วแจ้งเหตุผลที่ถูกต้องแทน
+        if ($isPost && empty($_POST) && empty($_FILES) && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+            $postLimit = ini_parse_quantity((string) ini_get('post_max_size'));
+            Yii::$app->session->setFlash('error', sprintf(
+                'ขนาดไฟล์แนบรวมทั้งหมดเกินกำหนด (รวมกันต้องไม่เกิน %d MB และแต่ละไฟล์ต้องไม่เกิน %d MB) — ไม่มีการบันทึกรายงาน กรุณาลดจำนวน/ขนาดไฟล์แล้วส่งใหม่',
+                (int) floor($postLimit / 1048576),
+                (int) (self::MAX_UPLOAD_BYTES / 1048576)
+            ));
+        }
+
         if ($model->load(Yii::$app->request->post())) {
             // ข้อ 3.1 ห้ามแก้ไขจากฟอร์ม — ต้องอ้างอิงข้อมูลที่อนุมัติจากระบบ A เท่านั้น
             // บังคับค่าฝั่งเซิร์ฟเวอร์ทับสิ่งที่โพสต์มาเสมอ (readonly ใน view เป็นแค่ UI hint,
@@ -217,14 +249,10 @@ class ReportController extends SecureController
             // type จริงของไฟล์ ไม่ใช่เชื่อชื่อไฟล์จากฝั่ง client เฉย ๆ)
             $attachmentFiles = UploadedFile::getInstancesByName('attachments');
             $attachmentsModel = new DynamicModel(['attachments' => $attachmentFiles]);
-            $attachmentsModel->addRule('attachments', 'file', [
-                'extensions' => 'pdf',
-                'mimeTypes' => 'application/pdf',
-                'checkExtensionByMimeType' => true,
-                'maxSize' => 10 * 1024 * 1024,
+            $attachmentsModel->addRule('attachments', 'file', self::pdfFileRule([
                 'maxFiles' => 10,
                 'skipOnEmpty' => true,
-            ]);
+            ]));
 
             $valid = $model->validate();
             $valid = $attachmentsModel->validate() && $valid;
@@ -637,12 +665,7 @@ class ReportController extends SecureController
     private function validateOptionalPdf(UploadedFile $file, string $label, array &$errors): bool
     {
         $model = new DynamicModel(['file' => $file]);
-        $model->addRule('file', 'file', [
-            'extensions' => 'pdf',
-            'mimeTypes' => 'application/pdf',
-            'checkExtensionByMimeType' => true,
-            'maxSize' => 10 * 1024 * 1024,
-        ]);
+        $model->addRule('file', 'file', self::pdfFileRule());
 
         if ($model->validate()) {
             return true;

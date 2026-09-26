@@ -65,6 +65,7 @@ $this->registerJsFile('@web/js/animal-usage-warning.js' . $assetVersion('js/anim
 $this->registerJsFile('@web/js/vendor/flatpickr.min.js');
 $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date-input.js'));
 $this->registerJsFile('@web/js/report-preview.js' . $assetVersion('js/report-preview.js'), ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-size-check.js'));
 ?>
 <div class="report-create">
     <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>
@@ -162,7 +163,10 @@ $this->registerJsFile('@web/js/report-preview.js' . $assetVersion('js/report-pre
         <div class="card-body">
             <?php $form = ActiveForm::begin([
                 'id' => 'progress-report-form',
-                'options' => ['enctype' => 'multipart/form-data'],
+                'options' => [
+                    'enctype' => 'multipart/form-data',
+                    'data-max-upload-bytes' => \app\controllers\ReportController::MAX_UPLOAD_BYTES,
+                ],
             ]); ?>
 
             <div id="report-form-fields">
@@ -397,7 +401,7 @@ $this->registerJsFile('@web/js/report-preview.js' . $assetVersion('js/report-pre
             <?php endif; ?>
             <div class="mb-3">
                 <input type="file" name="attachments[]" multiple accept="application/pdf" class="form-control">
-                <div class="form-text">แนบไฟล์ PDF ได้หลายไฟล์ (ไม่เกิน 10 ไฟล์ ไฟล์ละไม่เกิน 10MB) — ถ้าฟอร์มส่งไม่ผ่านต้องเลือกไฟล์แนบใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</div>
+                <div class="form-text">แนบไฟล์ PDF ได้หลายไฟล์ (ไม่เกิน 10 ไฟล์ ไฟล์ละไม่เกิน <?= (int) (\app\controllers\ReportController::MAX_UPLOAD_BYTES / 1048576) ?>MB — ถ้าไฟล์ใหญ่กว่านี้ระบบจะแจ้งเตือนและไม่รับไฟล์นั้น) — ถ้าฟอร์มส่งไม่ผ่านต้องเลือกไฟล์แนบใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</div>
             </div>
             </div><!-- /#report-form-fields -->
 

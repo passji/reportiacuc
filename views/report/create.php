@@ -389,7 +389,9 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
                 <p class="text-body-secondary small mt-2">หากส่งฟอร์มไม่ผ่านต้องเลือกไฟล์ PDF ที่แนบไว้ในแต่ละรายการใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</p>
             </div>
 
-            <p class="text-danger mb-2"><h2>หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานการรับรองจาก คกส.มข</h2></p>
+            
+            <div class="alert alert-danger"><h2 style="
+">หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานการรับรองจาก คกส.มข</h2></div>
 
             <h2 class="h6 fw-bold mt-4 mb-3">เอกสารแนบ (PDF)</h2>
             <?php if (!empty($attachmentErrors)): ?>

@@ -120,7 +120,7 @@ class ProgressReport extends ActiveRecord
                 return $('input[name=\"ProgressReport[objective_changed]\"]:checked').val() === 'changed';
             }"],
 
-            // ข้อ 2.1 — วันที่/เหตุผลที่จำเป็นขึ้นอยู่กับสถานะโครงการ
+            // ข้อ 2 — วันที่/เหตุผลที่จำเป็นขึ้นอยู่กับสถานะโครงการ
             [['expected_start_date'], 'required', 'when' => function ($model) {
                 return $model->status === 'not_started';
             }, 'whenClient' => "function (attribute, value) {

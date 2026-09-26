@@ -416,16 +416,16 @@ class ReportController extends SecureController
 
         $rows = [
             'ข้อ 1: เลขที่โครงการ' => $model->project_code,
-            'ข้อ 2: วันที่พิจารณา' => preg_replace('/^ครั้งที่\s*\S*\s*/u', '', (string) $model->meeting_ref),
-            'ข้อ 3: ชื่อหัวหน้าโครงการ' => $model->pi_name,
-            'ข้อ 4: ชื่อโครงการ (ภาษาไทย)' => $model->project_name_th,
-            'ข้อ 5: ชื่อโครงการ (ภาษาอังกฤษ)' => $model->project_name_en,
+            'วันที่พิจารณา' => preg_replace('/^ครั้งที่\s*\S*\s*/u', '', (string) $model->meeting_ref),
+            'ข้อ 2: ชื่อหัวหน้าโครงการ' => $model->pi_name,
+            'ข้อ 3: ชื่อโครงการ (ภาษาไทย)' => $model->project_name_th,
+            'ข้อ 4: ชื่อโครงการ (ภาษาอังกฤษ)' => $model->project_name_en,
             'มีการเปลี่ยนแปลงวัตถุประสงค์หรือไม่' => $model->objective_changed === 'changed' ? 'มีการเปลี่ยนแปลง' : 'เหมือนเดิม',
         ];
         if ($model->objective_changed === 'changed') {
             $rows['รายละเอียดการเปลี่ยนแปลงวัตถุประสงค์'] = $model->objective_change_detail;
         }
-        $rows['ข้อ 2.1: สถานะการดำเนินโครงการ'] = $statusLabels[$model->status] ?? $model->status;
+        $rows['ข้อ 2: สถานะการดำเนินโครงการ'] = $statusLabels[$model->status] ?? $model->status;
         if ($model->status === 'not_started') {
             $rows['วันที่คาดว่าจะเริ่มดำเนินการ'] = ThaiDate::format($model->expected_start_date, false);
         } elseif ($model->status === 'in_progress') {

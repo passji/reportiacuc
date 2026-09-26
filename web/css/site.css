@@ -167,105 +167,187 @@ a.desc:after {
     border-bottom: none;
 }
 
-/* ===== โทนสีหลักของระบบ: น้ำเงิน – ฟ้า – ขาว =====
+/* ===== โทนสีหลักของระบบ: น้ำเงิน – ฟ้า – ขาว (ชุดสีตามภาพ infographic คู่มือที่ผู้ใช้ส่งมา: น้ำเงินเข้ม #003a7e,
+   น้ำเงินเหล็ก #2478b2, ฟ้าอ่อน #b1daf5/#d2ecff/#e7f4fd, ส้มแดงมหาวิทยาลัย #db4d1f) =====
    เขียนทับค่า indigo/ม่วงเดิมที่ตั้งไว้ท้ายไฟล์ vendor/sb-admin-2.css (และสี SB Admin เดิม #4e73df)
    ให้เป็นชุดสีน้ำเงิน/ฟ้าชุดเดียวทั้งระบบ — site.css โหลดหลัง sb-admin-2.css จึงชนะได้โดยไม่ต้องแก้ไฟล์
    vendor (จุดที่ vendor ใส่ !important ไว้ต้องใส่ !important ซ้ำด้วยถึงจะทับได้)
    สีสถานะ (เขียว/เหลือง/แดง ของ badge/สถานะโครงการ) คงเดิมโดยตั้งใจ เพราะสื่อความหมายเชิงสถานะ
    ไม่ใช่สีแบรนด์ */
 :root {
-    --brand-navy: #0d47a1;
-    --brand-blue: #1565c0;
-    --brand-sky: #42a5f5;
-    --brand-sky-light: #90caf9;
-    --brand-tint: #e3f2fd;
+    --brand-navy: #003a7e;
+    --brand-blue: #2478b2;
+    --brand-sky: #b1daf5;
+    --brand-sky-light: #d2ecff;
+    --brand-tint: #e7f4fd;
 
-    --bs-primary: #1565c0;
-    --bs-primary-rgb: 21, 101, 192;
-    --bs-link-color-rgb: 21, 101, 192;
-    --bs-link-hover-color-rgb: 13, 71, 161;
+    --bs-primary: #003a7e;
+    --bs-primary-rgb: 0, 58, 126;
+    --bs-link-color-rgb: 0, 58, 126;
+    --bs-link-hover-color-rgb: 0, 43, 94;
 }
 
-/* โหมดมืด: น้ำเงินเข้ม #1565c0 บนพื้นเข้มอ่านยาก ใช้ฟ้าอ่อนขึ้นสำหรับลิงก์/ข้อความ/ขอบปุ่ม outline */
+/* โหมดมืด: น้ำเงินเข้ม #003a7e บนพื้นเข้มอ่านยาก ใช้ฟ้าอ่อนขึ้นสำหรับลิงก์/ข้อความ/ขอบปุ่ม outline */
 [data-bs-theme="dark"] {
-    --bs-link-color-rgb: 100, 181, 246;
-    --bs-link-hover-color-rgb: 144, 202, 249;
+    --bs-link-color-rgb: 140, 198, 236;
+    --bs-link-hover-color-rgb: 177, 218, 245;
 }
 
 .text-primary {
-    color: #1565c0 !important;
+    color: #003a7e !important;
 }
 
 a.text-primary:hover,
 a.text-primary:focus {
-    color: #0d47a1 !important;
+    color: #002b5e !important;
 }
 
 [data-bs-theme="dark"] .text-primary {
-    color: #64b5f6 !important;
+    color: #8cc6ec !important;
 }
 
 [data-bs-theme="dark"] a.text-primary:hover,
 [data-bs-theme="dark"] a.text-primary:focus {
-    color: #90caf9 !important;
+    color: #b1daf5 !important;
 }
 
 .border-left-primary {
-    border-left: 0.25rem solid #1565c0 !important;
+    border-left: 0.25rem solid #003a7e !important;
 }
 
 .border-bottom-primary {
-    border-bottom: 0.25rem solid #1565c0 !important;
+    border-bottom: 0.25rem solid #003a7e !important;
 }
 
 .topbar .dropdown-list .dropdown-header {
-    background-color: #1565c0;
-    border: 1px solid #1565c0;
+    background-color: #003a7e;
+    border: 1px solid #003a7e;
 }
 
 .btn-primary {
-    --bs-btn-bg: #1565c0;
-    --bs-btn-border-color: #1565c0;
-    --bs-btn-hover-bg: #0d47a1;
-    --bs-btn-hover-border-color: #0d47a1;
-    --bs-btn-active-bg: #0a3a82;
-    --bs-btn-active-border-color: #0a3a82;
-    --bs-btn-disabled-bg: #1565c0;
-    --bs-btn-disabled-border-color: #1565c0;
-    --bs-btn-focus-shadow-rgb: 66, 165, 245;
+    --bs-btn-bg: #003a7e;
+    --bs-btn-border-color: #003a7e;
+    --bs-btn-hover-bg: #002b5e;
+    --bs-btn-hover-border-color: #002b5e;
+    --bs-btn-active-bg: #00224a;
+    --bs-btn-active-border-color: #00224a;
+    --bs-btn-disabled-bg: #003a7e;
+    --bs-btn-disabled-border-color: #003a7e;
+    --bs-btn-focus-shadow-rgb: 36, 120, 178;
 }
 
 .btn-outline-primary {
-    --bs-btn-color: #1565c0;
-    --bs-btn-border-color: #1565c0;
-    --bs-btn-hover-bg: #1565c0;
-    --bs-btn-hover-border-color: #1565c0;
-    --bs-btn-active-bg: #1565c0;
-    --bs-btn-active-border-color: #1565c0;
-    --bs-btn-focus-shadow-rgb: 66, 165, 245;
+    --bs-btn-color: #003a7e;
+    --bs-btn-border-color: #003a7e;
+    --bs-btn-hover-bg: #003a7e;
+    --bs-btn-hover-border-color: #003a7e;
+    --bs-btn-active-bg: #003a7e;
+    --bs-btn-active-border-color: #003a7e;
+    --bs-btn-focus-shadow-rgb: 36, 120, 178;
 }
 
 [data-bs-theme="dark"] .btn-outline-primary {
-    --bs-btn-color: #64b5f6;
-    --bs-btn-border-color: #64b5f6;
+    --bs-btn-color: #8cc6ec;
+    --bs-btn-border-color: #8cc6ec;
 }
 
 .form-check-input:checked {
-    background-color: #1565c0;
-    border-color: #1565c0;
+    background-color: #003a7e;
+    border-color: #003a7e;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #90caf9;
-    box-shadow: 0 0 0 0.25rem rgba(66, 165, 245, 0.25);
+    border-color: #b1daf5;
+    box-shadow: 0 0 0 0.25rem rgba(36, 120, 178, 0.25);
 }
 
-/* sidebar gradient: น้ำเงินเข้ม → น้ำเงิน → ฟ้า (ข้อความ/ไอคอนใน sidebar เป็นสีขาว รายการเมนูอยู่
-   ช่วงบนของ gradient ที่ยังเข้มพอให้ตัวหนังสืออ่านชัด ส่วนล่างที่อ่อนสุดมีแค่ปุ่ม toggle วงกลม) */
+/* ขนาดตัวอักษร sidebar — ค่าเดิมของ sb-admin-2 เล็กมาก (เมนู 0.85rem, หัวข้อกลุ่ม 0.65rem) ขยายให้อ่านง่ายขึ้น
+   ต้องซ้อน selector ใน media query ให้ตรงกับของ vendor (มือถือ/จอแคบ ใช้ค่าเดิมของโหมด icon-only) */
+@media (min-width: 768px) {
+    .sidebar .nav-item .nav-link span {
+        font-size: 1.05rem;
+    }
+
+    .sidebar .nav-item .nav-link i {
+        font-size: 1.05rem;
+        margin-right: 0.4rem;
+    }
+
+    .sidebar .sidebar-heading {
+        font-size: 0.8rem;
+    }
+
+    /* โหมด sidebar ย่อ (ปุ่ม toggle) เหลือแค่ไอคอน + ป้ายสั้น ๆ ใต้ไอคอน */
+    .sidebar.toggled .nav-item .nav-link span {
+        font-size: 0.75rem;
+    }
+
+    .sidebar.toggled .nav-item .nav-link i {
+        font-size: 1.15rem;
+        margin-right: 0;
+    }
+}
+
+/* sidebar: สีขาวล้วน (ตามที่ผู้ใช้กำหนด — ไม่ใช้ gradient)
+   ต้นทางของธีมเป็น sidebar-dark (ตัวหนังสือ/ไอคอนขาว) ซึ่งอ่านไม่ออกบนพื้นขาว จึงเปลี่ยนสีข้อความ
+   ไอคอน เส้นคั่น และปุ่ม toggle เป็นน้ำเงินเข้มด้านล่าง — ใส่เงาด้านขวาเพื่อแยก sidebar ออกจากเนื้อหา
+   (z-index ให้เงาทับส่วนเนื้อหาที่อยู่ถัดไปใน DOM) */
 .bg-gradient-primary {
-    background-color: #1565c0;
-    background-image: linear-gradient(180deg, #0d47a1 0%, #1565c0 45%, #42a5f5 100%);
+    background-color: #ffffff;
+    background-image: none;
+    box-shadow: 4px 0 14px rgba(0, 58, 126, 0.18), 1px 0 0 rgba(0, 58, 126, 0.10);
+}
+
+@media (min-width: 768px) {
+    .sidebar.bg-gradient-primary {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+.sidebar-dark .sidebar-brand,
+.sidebar-dark .nav-item .nav-link {
+    color: #0a2f5c;
+}
+
+.sidebar-dark .nav-item .nav-link i {
+    color: #14609f;
+}
+
+.sidebar-dark .nav-item .nav-link:hover,
+.sidebar-dark .nav-item .nav-link:focus,
+.sidebar-dark .nav-item .nav-link:active,
+.sidebar-dark .nav-item.active .nav-link {
+    color: #001f45;
+}
+
+.sidebar-dark .nav-item .nav-link:hover i,
+.sidebar-dark .nav-item .nav-link:focus i,
+.sidebar-dark .nav-item .nav-link:active i,
+.sidebar-dark .nav-item.active .nav-link i {
+    color: #003a7e;
+}
+
+.sidebar-dark hr.sidebar-divider {
+    border-top: 1px solid rgba(0, 58, 126, 0.25);
+}
+
+.sidebar-dark .sidebar-heading {
+    color: #14609f;
+}
+
+.sidebar-dark #sidebarToggle {
+    background-color: rgba(0, 58, 126, 0.18);
+}
+
+.sidebar-dark #sidebarToggle::after,
+.sidebar-dark.toggled #sidebarToggle::after {
+    color: #003a7e;
+}
+
+.sidebar-dark #sidebarToggle:hover {
+    background-color: rgba(0, 58, 126, 0.28);
 }
 
 /* footer logo: light logo by default (light bg-body-tertiary), dark logo for dark theme */
@@ -363,7 +445,7 @@ a.text-primary:focus {
 }
 
 .login-brand-panel {
-    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 50%, #42a5f5 100%);
+    background: linear-gradient(135deg, #003a7e 0%, #2478b2 60%, #b1daf5 100%);
     position: relative;
     min-height: 480px;
 }
@@ -374,12 +456,12 @@ a.text-primary:focus {
     inset: 0;
     background:
         radial-gradient(circle at 20% 80%, rgba(255, 255, 255, .16) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(144, 202, 249, .25) 0%, transparent 40%);
+        radial-gradient(circle at 80% 20%, rgba(210, 236, 255, .30) 0%, transparent 40%);
     pointer-events: none;
 }
 
 .login-btn {
-    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    background: linear-gradient(135deg, #2478b2, #003a7e);
     border: none;
     font-weight: 600;
     letter-spacing: .02em;
@@ -465,7 +547,7 @@ a.text-primary:focus {
 
 /* hero banner */
 .hero-banner {
-    background: linear-gradient(135deg, #0d47a1 0%, #1565c0 45%, #42a5f5 100%);
+    background: linear-gradient(135deg, #003a7e 0%, #2478b2 60%, #b1daf5 100%);
     position: relative;
 }
 
@@ -481,7 +563,7 @@ a.text-primary:focus {
     background:
         radial-gradient(circle at 15% 85%, rgba(255, 255, 255, .18) 0%, transparent 45%),
         radial-gradient(circle at 85% 15%, rgba(179, 229, 252, .30) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 50%, rgba(144, 202, 249, .15) 0%, transparent 60%);
+        radial-gradient(ellipse at 50% 50%, rgba(210, 236, 255, .18) 0%, transparent 60%);
     pointer-events: none;
 }
 
@@ -492,7 +574,7 @@ a.text-primary:focus {
    เข้ากับพื้นหลังเดิมได้ทั้งโหมดสว่าง/มืดโดยไม่ต้อง override แยกสี */
 .table > tbody > tr:hover > * {
     --bs-table-color-state: var(--bs-emphasis-color);
-    --bs-table-bg-state: rgba(66, 165, 245, .18);
+    --bs-table-bg-state: rgba(36, 120, 178, .18);
 }
 
 /* dashboard/index: แถบสัดส่วนแนวนอน (segmented bar) + legend กริด 2 คอลัมน์ ใช้แทน pie/doughnut chart
@@ -580,4 +662,10 @@ a.text-primary:focus {
     line-height: 1.3;
     padding: 0 0 0 20px;
     max-width: 60%;
+}
+
+/* โหมดสว่าง: พื้นหลังส่วนเนื้อหาเป็นฟ้าจางแทนเทาอมม่วงเดิมของ sb-admin-2 (#f8f9fc) ให้ตรงโทนภาพอ้างอิง
+   (การ์ดสีขาวของ Bootstrap ยังคงขาวตามเดิม จึงตัดกับพื้นฟ้าจางได้ชัด) */
+html:not([data-bs-theme="dark"]) #wrapper #content-wrapper {
+    background-color: var(--brand-tint);
 }

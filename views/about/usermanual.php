@@ -15,12 +15,12 @@ $manualCssVersion = is_file($manualCssPath) ? ('?v=' . filemtime($manualCssPath)
 $this->registerCssFile('@web/css/manual-infographic.css' . $manualCssVersion);
 
 $overviewSteps = [
-    ['icon' => 'fa-right-to-bracket', 'color' => '#0d47a1', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยบัญชี Google'],
-    ['icon' => 'fa-link', 'color' => '#1256b0', 'title' => 'เปิดฟอร์ม', 'caption' => 'จากลิงก์ที่ได้รับ'],
-    ['icon' => 'fa-pen-to-square', 'color' => '#1565c0', 'title' => 'กรอกข้อมูล', 'caption' => 'ครบทั้ง 6 ข้อ'],
-    ['icon' => 'fa-square-check', 'color' => '#1976d2', 'title' => 'ตรวจสอบ', 'caption' => 'ติ๊กรับรอง 2 ข้อ'],
-    ['icon' => 'fa-paper-plane', 'color' => '#1e88e5', 'title' => 'ส่งรายงาน', 'caption' => 'ยืนยันและส่ง'],
-    ['icon' => 'fa-file-pdf', 'color' => '#2196f3', 'title' => 'ดูผล/PDF', 'caption' => 'ที่ "รายงานของฉัน"'],
+    ['icon' => 'fa-right-to-bracket', 'color' => '#003a7e', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยบัญชี Google'],
+    ['icon' => 'fa-link', 'color' => '#0a4a8e', 'title' => 'เปิดฟอร์ม', 'caption' => 'จากลิงก์ที่ได้รับ'],
+    ['icon' => 'fa-pen-to-square', 'color' => '#14609f', 'title' => 'กรอกข้อมูล', 'caption' => 'ครบทั้ง 6 ข้อ'],
+    ['icon' => 'fa-square-check', 'color' => '#2478b2', 'title' => 'ตรวจสอบ', 'caption' => 'ติ๊กรับรอง 2 ข้อ'],
+    ['icon' => 'fa-paper-plane', 'color' => '#3388c0', 'title' => 'ส่งรายงาน', 'caption' => 'ยืนยันและส่ง'],
+    ['icon' => 'fa-file-pdf', 'color' => '#4a9ad0', 'title' => 'ดูผล/PDF', 'caption' => 'ที่ "รายงานของฉัน"'],
 ];
 ?>
 <div class="about-usermanual mx-auto" style="max-width: 900px;">

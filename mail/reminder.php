@@ -49,7 +49,7 @@ $piName = $project->m_pro_th ?: 'หัวหน้าโครงการ';
 <p style="margin:20px 0 8px;font-weight:bold;">แบบฟอร์มรายงานความก้าวหน้าโครงการ</p>
 <p style="margin:0 0 20px;">
     <a href="<?= Html::encode($link) ?>"
-       style="background-color:#1565c0;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
+       style="background-color:#003a7e;color:#ffffff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block;">
         แจ้งความก้าวหน้าโครงการ
     </a>
     <br>

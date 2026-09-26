@@ -15,11 +15,11 @@ $manualCssVersion = is_file($manualCssPath) ? ('?v=' . filemtime($manualCssPath)
 $this->registerCssFile('@web/css/manual-infographic.css' . $manualCssVersion);
 
 $overviewSteps = [
-    ['icon' => 'fa-right-to-bracket', 'color' => '#0d47a1', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยอีเมล Admin'],
-    ['icon' => 'fa-clipboard-check', 'color' => '#1256b0', 'title' => 'ตรวจรายงาน', 'caption' => 'อนุมัติ / ปฏิเสธ'],
-    ['icon' => 'fa-envelope-open-text', 'color' => '#1565c0', 'title' => 'แจ้งเตือน', 'caption' => 'ส่งอีเมล/ตั้งรอบอัตโนมัติ'],
-    ['icon' => 'fa-gauge-high', 'color' => '#1976d2', 'title' => 'ดูภาพรวม', 'caption' => 'Dashboard/สถิติ'],
-    ['icon' => 'fa-user-shield', 'color' => '#1e88e5', 'title' => 'จัดการสิทธิ์', 'caption' => 'เพิ่ม/ลบ Admin'],
+    ['icon' => 'fa-right-to-bracket', 'color' => '#003a7e', 'title' => 'เข้าสู่ระบบ', 'caption' => 'ด้วยอีเมล Admin'],
+    ['icon' => 'fa-clipboard-check', 'color' => '#0a4a8e', 'title' => 'ตรวจรายงาน', 'caption' => 'อนุมัติ / ปฏิเสธ'],
+    ['icon' => 'fa-envelope-open-text', 'color' => '#14609f', 'title' => 'แจ้งเตือน', 'caption' => 'ส่งอีเมล/ตั้งรอบอัตโนมัติ'],
+    ['icon' => 'fa-gauge-high', 'color' => '#2478b2', 'title' => 'ดูภาพรวม', 'caption' => 'Dashboard/สถิติ'],
+    ['icon' => 'fa-user-shield', 'color' => '#3388c0', 'title' => 'จัดการสิทธิ์', 'caption' => 'เพิ่ม/ลบ Admin'],
 ];
 ?>
 <div class="about-adminmanual mx-auto" style="max-width: 900px;">

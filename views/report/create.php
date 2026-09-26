@@ -390,8 +390,8 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
             </div>
 
             
-            <div class="alert alert-danger"><h2 style="
-">หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานการรับรองจาก คกส.มข</h2></div>
+            <div class="alert alert-danger"><h4 style="
+">หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานการรับรองจากศูนย์กำกับดูแลการดำเนินการต่อสัตว์เพื่องานจากวิทยาศาสตร์</h4></div>
 
             <h2 class="h6 fw-bold mt-4 mb-3">เอกสารแนบ (PDF)</h2>
             <?php if (!empty($attachmentErrors)): ?>

@@ -24,8 +24,7 @@ $piName = $project->m_pro_th ?: 'หัวหน้าโครงการ';
     </tr>
     <tr>
         <td>
-            2. เข้าประชุมครั้งที่ <?= Html::encode($project->meeting_no ?: '-') ?>
-            และวันที่พิจารณา <?= Html::encode(ThaiDate::format($project->meeting_date, false)) ?>
+            2. วันที่พิจารณา <?= Html::encode(ThaiDate::format($project->meeting_date, false)) ?>
         </td>
     </tr>
     <tr>

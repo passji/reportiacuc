@@ -198,7 +198,7 @@ class ReportController extends SecureController
         $model->pi_name = trim((string) $project->m_pro_th . ($project->m_pro_dept_th ? ' (' . $project->m_pro_dept_th . ')' : ''));
         $model->project_name_th = (string) $project->oname;
         $model->project_name_en = (string) $project->oname_en;
-        $model->meeting_ref = trim(sprintf('ครั้งที่ %s วันที่ %s', $project->meeting_no, ThaiDate::format($project->meeting_date)));
+        $model->meeting_ref = trim(sprintf('วันที่ %s', ThaiDate::format($project->meeting_date)));
         $model->project_code = (string) ($project->getRawData()['meet_summary'] ?? '');
 
         $rawProjectData = $project->getRawData();
@@ -416,7 +416,7 @@ class ReportController extends SecureController
 
         $rows = [
             'ข้อ 1: เลขที่โครงการ' => $model->project_code,
-            'ข้อ 2: เข้าประชุมครั้งที่ / วันที่พิจารณา' => $model->meeting_ref,
+            'ข้อ 2: วันที่พิจารณา' => preg_replace('/^ครั้งที่\s*\S*\s*/u', '', (string) $model->meeting_ref),
             'ข้อ 3: ชื่อหัวหน้าโครงการ' => $model->pi_name,
             'ข้อ 4: ชื่อโครงการ (ภาษาไทย)' => $model->project_name_th,
             'ข้อ 5: ชื่อโครงการ (ภาษาอังกฤษ)' => $model->project_name_en,

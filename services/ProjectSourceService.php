@@ -5,7 +5,7 @@ namespace app\services;
 use app\models\ResearchProject;
 
 /**
- * Fetches live project data from ระบบ A's public GET endpoint and upserts it
+ * Fetches live project data from ระบบ iacuc.kku.ac.th's public GET endpoint and upserts it
  * into research_projects by oid. Called on-demand every time a report form
  * is opened (see README.md — "Flow หลัก").
  */

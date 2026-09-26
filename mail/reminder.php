@@ -20,7 +20,7 @@ $piName = $project->m_pro_th ?: 'หัวหน้าโครงการ';
 <p style="font-weight:bold;margin-bottom:8px;">อ้างถึง: ข้อมูลโครงการวิจัยที่ได้รับอนุมัติ</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;font-size:14px;line-height:1.6;">
     <tr>
-        <td>1. รหัสโครงการเลขที่ <?= Html::encode($project->getProjectCode() ?: '-') ?></td>
+        <td>1. <?= Html::encode($project->getProjectCode() ?: '-') ?></td>
     </tr>
     <tr>
         <td>

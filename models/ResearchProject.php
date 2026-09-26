@@ -66,7 +66,7 @@ class ResearchProject extends ActiveRecord
     }
 
     /**
-     * ระบบ A ไม่ได้ส่งข้อมูลสัตว์ที่อนุมัติมาเป็นคอลัมน์แยก (an_type, an_name, male_total, ...)
+     * ระบบ iacuc.kku.ac.th ไม่ได้ส่งข้อมูลสัตว์ที่อนุมัติมาเป็นคอลัมน์แยก (an_type, an_name, male_total, ...)
      * แต่ฝังมาใน raw_json เท่านั้น — ถอดรหัสไว้ให้หน้าจอเรียกใช้แสดงผลได้
      */
     public function getRawData(): array

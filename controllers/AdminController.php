@@ -82,7 +82,7 @@ class AdminController extends SecureController
         if ($endDate !== '') {
             $query->andWhere(['<=', 't.latest_submitted_at', $endDate . ' 23:59:59']);
         }
-        // meeting_date เก็บเป็น string เต็มรูปแบบ "Y-m-d H:i:s" (มาจากระบบ A ตรงๆ ไม่ได้แปลงเป็น
+        // meeting_date เก็บเป็น string เต็มรูปแบบ "Y-m-d H:i:s" (มาจากระบบ iacuc.kku.ac.th ตรงๆ ไม่ได้แปลงเป็น
         // DATE column) เทียบช่วงแบบ string ได้ตรงเพราะ format เรียงลำดับได้ (ISO-like)
         if ($meetingStartDate !== '') {
             $query->andWhere(['>=', 't.meeting_date', $meetingStartDate . ' 00:00:00']);

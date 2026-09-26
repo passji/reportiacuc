@@ -23,7 +23,7 @@ $fields = [
     'oname_en' => 'ชื่อโครงการ (อังกฤษ)',
     'm_pro_th' => 'หัวหน้าโครงการ',
     'm_pro_dept_th' => 'สังกัด/ภาควิชา',
-    'md_name' => 'สัตวแพทย์ประจำโครงการ/สัตวแพทย์ประจำสถานีบริการ',
+    'md_name' => 'สัตวแพทย์ประจำโครงการ/สัตวแพทย์ประจำสถานที่ดำเนินการ',
     'meeting_date' => 'วันที่ประชุม',
     's_email' => 'อีเมลผู้ยื่นโครงการ',
     's_phone' => 'เบอร์โทรผู้ยื่นโครงการ',
@@ -108,11 +108,11 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
                     <td><?= Html::encode($val('an_name')) ?> — <?= Html::encode($val('an_sectment')) ?></td>
                 </tr>
                 <tr>
-                    <th class="text-body-secondary fw-normal">จำนวนที่อนุมัติ (ตัวผู้)</th>
+                    <th class="text-body-secondary fw-normal">จำนวนที่อนุมัติ (เพศผู้)</th>
                     <td><?= Html::encode($primaryMale ?? '-') ?></td>
                 </tr>
                 <tr>
-                    <th class="text-body-secondary fw-normal">จำนวนที่อนุมัติ (ตัวเมีย)</th>
+                    <th class="text-body-secondary fw-normal">จำนวนที่อนุมัติ (เพศเมีย)</th>
                     <td><?= Html::encode($primaryFemale ?? '-') ?></td>
                 </tr>
                 <?php if ($hasSecondGroup): ?>
@@ -155,7 +155,7 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
     </div>
 
     <div class="alert alert-info small">
-        แบบฟอร์มนี้ใช้สำหรับรายงานความก้าวหน้าโครงการและแจ้งปิดโครงการเท่านั้น หากต้องการแก้ไขข้อมูลโครงการหรือขออนุมัติเปลี่ยนแปลงวัตถุประสงค์/วิธีการทดลอง/จำนวนสัตว์ที่ขออนุมัติ กรุณาติดต่อเจ้าหน้าที่ <strong>สำนักงานคณะกรรมการจริยธรรมการใช้สัตว์ในงานวิจัย</strong> 
+        แบบฟอร์มนี้ใช้สำหรับรายงานความก้าวหน้าโครงการและแจ้งปิดโครงการเท่านั้น หากต้องการแก้ไขข้อมูลโครงการหรือขออนุมัติเปลี่ยนแปลงวัตถุประสงค์/วิธีการทดลอง/จำนวนสัตว์ที่ขออนุมัติ กรุณาติดต่อเจ้าหน้าที่ <strong>ศูนย์กำกับดูแลการดำเนินการต่อสัตว์เพื่องานทางวิทยาศาสตร์</strong> 
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -187,7 +187,7 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
                 <?= $form->field($model, 'objective_change_detail')->textarea(['rows' => 3])->label('รายละเอียดการเปลี่ยนแปลงวัตถุประสงค์') ?>
             </div>
 
-            <h2 class="h6 fw-bold mt-4 mb-3">ข้อ 2.1 — สถานะการดำเนินโครงการ</h2>
+            <h2 class="h6 fw-bold mt-4 mb-3">ข้อ 2 — สถานะการดำเนินโครงการ</h2>
             <?= $form->field($model, 'status')->dropDownList($statusOptions, ['prompt' => '— เลือกสถานะ —']) ?>
             <div data-show-when="status:not_started">
                 <?= $form->field($model, 'expected_start_date')->textInput([
@@ -219,7 +219,7 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
 
             <h2 class="h6 fw-bold mt-4 mb-3">ข้อ 3 — การใช้สัตว์ทดลอง</h2>
 
-            <p class="fw-semibold small mb-2">ข้อ 3.1: จำนวนสัตว์ที่ขอ/ได้รับอนุมัติ (ดึงจากข้อมูลที่อนุมัติด้านบนโดยตรง แก้ไขไม่ได้)</p>
+            <p class="fw-semibold small mb-2">ข้อ 3.1: จำนวนสัตว์ที่ได้รับอนุมัติ (ดึงจากข้อมูลที่ได้รับการอนุมัติโดยตรง แก้ไขไม่ได้)</p>
             <div class="row">
                 <div class="col-sm-6">
                     <?= $form->field($model, 'animal_requested_male')->input('number', ['min' => 0, 'readonly' => true, 'tabindex' => -1, 'class' => 'form-control bg-body-secondary'])->label('จำนวนตัวผู้') ?>
@@ -389,7 +389,7 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
                 <p class="text-body-secondary small mt-2">หากส่งฟอร์มไม่ผ่านต้องเลือกไฟล์ PDF ที่แนบไว้ในแต่ละรายการใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</p>
             </div>
 
-            <p class="text-danger small mb-2">หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานรับรองจาก คกส.มข</p>
+            <p class="text-danger mb-2"><h2>หากมีการเปลี่ยนแปลงใดๆ ข้างต้นให้แนบหลักฐานการรับรองจาก คกส.มข</h2></p>
 
             <h2 class="h6 fw-bold mt-4 mb-3">เอกสารแนบ (PDF)</h2>
             <?php if (!empty($attachmentErrors)): ?>

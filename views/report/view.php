@@ -25,7 +25,7 @@ $generalAttachments = array_filter($model->attachments, function ($attachment) {
     return $attachment->publication_id === null && $attachment->ip_filing_id === null;
 });
 
-// ข้อมูลโครงการ (จากระบบ A) — เอามาแสดงในหน้านี้ด้วยแบบเดียวกับที่ report/oid ใช้ ให้ดูรายงานฉบับเดียว
+// ข้อมูลโครงการ (จากระบบ iacuc.kku.ac.th) — เอามาแสดงในหน้านี้ด้วยแบบเดียวกับที่ report/oid ใช้ ให้ดูรายงานฉบับเดียว
 // รู้บริบทโครงการครบโดยไม่ต้องสลับไปหน้าประวัติ
 $project = $model->researchProject;
 if ($project) {

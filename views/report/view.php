@@ -376,6 +376,18 @@ if ($project) {
                     <?= Html::submitButton('ปฏิเสธ', ['class' => 'btn btn-outline-danger']) ?>
                 <?= Html::endForm() ?>
             </div>
+
+            <hr>
+            <?= Html::beginForm(
+                ['delete', 'id' => $model->id],
+                'post',
+                [
+                    'data-confirm-message' => 'ยืนยันลบรายงานฉบับนี้? จะลบข้อมูลรายงานและไฟล์แนบทั้งหมดถาวร กู้คืนไม่ได้',
+                    'data-confirm-icon' => 'warning',
+                ]
+            ) ?>
+                <?= Html::submitButton('<i class="fas fa-trash me-1"></i> ลบรายงานนี้', ['class' => 'btn btn-sm btn-outline-danger']) ?>
+            <?= Html::endForm() ?>
             <?php endif; ?>
         </div>
     </div>

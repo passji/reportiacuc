@@ -8,10 +8,13 @@
 /** @var yii\data\ActiveDataProvider $notificationsProvider */
 
 use app\helpers\ThaiDate;
+use app\models\Admin;
 use app\models\ProgressReport;
 use app\models\ReportNotification;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\LinkPager;
+
+$isAdmin = Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'));
 
 $this->title = 'ประวัติการรายงานความก้าวหน้า — ' . $project->oid;
 $this->params['breadcrumbs'][] = $this->title;
@@ -186,8 +189,17 @@ $hasSecondGroup = $animalGroups['has_second_group'] || $secondMale !== null || $
                                 <i class="fas <?= $reviewIcon['icon'] ?> <?= $reviewIcon['class'] ?>"
                                    title="<?= Html::encode(ProgressReport::REVIEW_STATUS_LABELS[$report->review_status] ?? $report->review_status) ?>"></i>
                             </td>
-                            <td class="text-end">
+                            <td class="text-end text-nowrap">
                                 <?= Html::a('ดูรายละเอียด', ['view', 'id' => $report->id], ['class' => 'btn btn-sm btn-outline-secondary']) ?>
+                                <?php if ($isAdmin): ?>
+                                    <?= Html::beginForm(['delete', 'id' => $report->id], 'post', [
+                                        'class' => 'd-inline',
+                                        'data-confirm-message' => 'ยืนยันลบรายงานฉบับนี้? จะลบข้อมูลรายงานและไฟล์แนบทั้งหมดถาวร กู้คืนไม่ได้',
+                                        'data-confirm-icon' => 'warning',
+                                    ]) ?>
+                                        <?= Html::submitButton('<i class="fas fa-trash"></i>', ['class' => 'btn btn-sm btn-outline-danger', 'title' => 'ลบรายงาน']) ?>
+                                    <?= Html::endForm() ?>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

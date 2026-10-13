@@ -28,7 +28,7 @@ use Mpdf\Output\Destination;
 class ReportController extends SecureController
 {
     /** ขนาดสูงสุดต่อไฟล์แนบ (ทั้ง attachments[] และไฟล์แนบรายข้อ 6.1/6.2) — ต้องไม่เกิน upload_max_filesize ใน docker/php/uploads.ini */
-    public const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+    public const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 
     /**
      * rule ของ FileValidator ชุดเดียวกันทุกจุดที่ตรวจไฟล์ PDF แนบ — แปลข้อความ error เป็นไทยเอง
@@ -551,6 +551,43 @@ class ReportController extends SecureController
         }
 
         return $this->redirect(['view', 'id' => $model->id]);
+    }
+
+    /**
+     * แอดมินลบรายงานทั้งฉบับ (เช่น ข้อมูลที่ใช้ทดสอบ) — ลบแถว progress_reports ซึ่งตารางลูก
+     * (ผลงานตีพิมพ์/ทรัพย์สินทางปัญญา/ไฟล์แนบ) ถูกลบตามด้วย ON DELETE CASCADE ใน DB แล้วลบโฟลเดอร์ไฟล์จริง
+     * uploads/reports/{id} ตามหลัง (ลบถาวร กู้คืนไม่ได้) — ไม่แตะแถว research_projects
+     */
+    public function actionDelete($id)
+    {
+        if (!Yii::$app->request->isPost) {
+            throw new BadRequestHttpException();
+        }
+
+        if (!Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'))) {
+            Yii::$app->session->setFlash('error', 'คุณไม่มีสิทธิ์ลบรายงาน (สำหรับผู้ดูแลระบบเท่านั้น)');
+            return $this->redirect(['/report/my-reports']);
+        }
+
+        $model = ProgressReport::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException('ไม่พบรายงานนี้');
+        }
+
+        $oid = $model->oid;
+        $reportId = (int) $model->id;
+        $model->delete();
+
+        // ลบไฟล์หลัง DB สำเร็จ — ถ้าลบแถวไม่สำเร็จจะ throw ก่อนถึงตรงนี้ ไฟล์จึงไม่หายทั้งที่รายงานยังอยู่
+        $dir = Yii::getAlias('@app/uploads/reports/' . $reportId);
+        if (is_dir($dir)) {
+            FileHelper::removeDirectory($dir);
+        }
+
+        Yii::info(sprintf('รายงาน id=%d (oid=%s) ถูกลบโดย %s', $reportId, $oid, Yii::$app->session->get('sso_email')), __METHOD__);
+        Yii::$app->session->setFlash('success', 'ลบรายงานเรียบร้อยแล้ว');
+
+        return $this->redirect(['oid', 'oid' => $oid]);
     }
 
     public function actionDownloadAttachment($id)

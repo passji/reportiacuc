@@ -344,6 +344,11 @@ class ReportController extends SecureController
                     return $this->redirect(['my-reports']);
                 } catch (\Throwable $e) {
                     $transaction->rollBack();
+                    // DB rollback ไม่ย้อนไฟล์ที่เขียนลงดิสก์ไปแล้ว — ลบโฟลเดอร์ของรายงานที่ไม่ถูกบันทึกนี้ทิ้ง
+                    // ไม่งั้นไฟล์ค้างเป็นขยะ และอาจไปปนกับ id เดียวกันที่ถูกใช้ซ้ำภายหลัง
+                    if ($model->id) {
+                        FileHelper::removeDirectory(Yii::getAlias('@app/uploads/reports/' . (int) $model->id));
+                    }
                     Yii::error((string) $e, __METHOD__);
                     Yii::$app->session->setFlash('error', 'เกิดข้อผิดพลาดขณะบันทึกรายงาน กรุณาลองใหม่อีกครั้ง');
                 }

@@ -92,8 +92,13 @@ class ProgressReport extends ActiveRecord
                 'method_change_detail', 'post_study_handling_detail', 'adverse_event_detail',
                 'personnel_change_detail', 'alt_method_detail', 'study_summary',
                 'project_name_th', 'project_name_en'], 'string'],
+            // คอลัมน์เป็น TEXT (65,535 ไบต์; ภาษาไทย 3 ไบต์/ตัวอักษร) — ถ้าไม่จำกัดตรงนี้ ข้อความยาวเกินจะ
+            // ผ่าน validate แล้วไปพังตอน save เป็น "เกิดข้อผิดพลาดขณะบันทึกรายงาน" ที่ผู้ใช้ไม่รู้สาเหตุ
+            [['objective_change_detail', 'stop_reason', 'animal_requested_note', 'animal_used_note',
+                'method_change_detail', 'post_study_handling_detail', 'adverse_event_detail',
+                'personnel_change_detail', 'alt_method_detail', 'study_summary', 'rejection_reason'], 'string', 'max' => 16000],
             [['animal_requested_male', 'animal_requested_female', 'animal_used_male', 'animal_used_female'],
-                'integer', 'min' => 0],
+                'integer', 'min' => 0, 'max' => 2000000000],
             [['animal_used_unit'], 'in', 'range' => array_keys(self::UNIT_LABELS)],
             [['animal_used_unit'], 'default', 'value' => 'head'],
             [['post_study_handling'], 'in', 'range' => array_keys(self::POST_STUDY_HANDLING_LABELS)],

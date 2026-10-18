@@ -33,7 +33,9 @@ class ReportIpFiling extends ActiveRecord
             [['report_id'], 'integer'],
             [['filed_date'], 'validateThaiDate'],
             [['registration_no'], 'string', 'max' => 100],
-            [['asset_name'], 'string'],
+            [['asset_name'], 'string', 'max' => 16000], // TEXT = 65,535 ไบต์ (ไทย 3 ไบต์/ตัวอักษร)
+            // dropdown ที่ไม่ได้เลือกส่งค่า '' มา — ENUM ใน DB รับ '' ไม่ได้ (Data truncated) ต้องแปลงเป็น NULL
+            [['ip_type'], 'default', 'value' => null],
             [['ip_type'], 'in', 'range' => array_keys(self::IP_TYPE_LABELS)],
         ];
     }

@@ -45,8 +45,17 @@ class ReportPublication extends ActiveRecord
             // report_id ไม่ใส่ required — เป็น FK ภายในที่ตั้งค่าโปรแกรมหลัง parent save() เสร็จ
             // เท่านั้น ตอน validate() ชุด sub-model ยังไม่มี parent id ให้ผูก
             [['report_id'], 'integer'],
-            [['article_title', 'journal_name', 'doi', 'db_other', 'quartile', 'impact_factor'], 'string'],
-            [['issue', 'page', 'pub_month', 'pub_year'], 'string', 'max' => 50],
+            // ความยาวต้องตรงกับคอลัมน์ใน DB (STRICT mode จะโยน "Data too long" ตอน save ซึ่งผู้ใช้เห็นเป็น
+            // "เกิดข้อผิดพลาดขณะบันทึกรายงาน" โดยไม่รู้ว่าช่องไหน) — article_title เป็น TEXT (65,535 ไบต์,
+            // ภาษาไทย 3 ไบต์/ตัวอักษร) จึงจำกัด 16,000 ตัวอักษร
+            [['article_title'], 'string', 'max' => 16000],
+            [['journal_name', 'doi', 'db_other'], 'string', 'max' => 255],
+            [['quartile', 'impact_factor'], 'string', 'max' => 20],
+            [['issue', 'page'], 'string', 'max' => 50],
+            [['pub_month'], 'string', 'max' => 20],
+            [['pub_year'], 'string', 'max' => 10],
+            // dropdown ที่ไม่ได้เลือกส่งค่า '' มา — ENUM ใน DB รับ '' ไม่ได้ (Data truncated) ต้องแปลงเป็น NULL
+            [['level', 'db_type'], 'default', 'value' => null],
             [['level'], 'in', 'range' => array_keys(self::LEVEL_LABELS)],
             [['db_type'], 'in', 'range' => array_keys(self::DB_TYPE_LABELS)],
         ];

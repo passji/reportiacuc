@@ -25,6 +25,22 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'lkPBF5H7eCAUPg9zJH0MdNpc24TMsZge',
+            // คุกกี้ _csrf: ส่งผ่าน HTTPS เท่านั้น (Secure) + ไม่ให้ JS อ่าน (HttpOnly) + SameSite=Lax กัน CSRF
+            'csrfCookie' => [
+                'httpOnly' => true,
+                'secure' => true,
+                'sameSite' => \yii\web\Cookie::SAME_SITE_LAX,
+            ],
+        ],
+        // คุกกี้ session (PHPSESSID) — ระบบนี้ให้บริการผ่าน HTTPS เท่านั้น (Apache ใน container เปิดแค่ 443)
+        // จึงตั้ง Secure ได้เลย; Lax ยังให้คุกกี้ติดไปกับการ redirect กลับจาก Google OAuth (GET แบบ top-level)
+        // ได้ตามปกติ แต่ไม่ส่งไปกับ POST/subrequest ข้ามเว็บ
+        'session' => [
+            'cookieParams' => [
+                'httponly' => true,
+                'secure' => true,
+                'samesite' => 'Lax',
+            ],
         ],
         'cache' => [
             'class' => \yii\caching\FileCache::class,
@@ -39,6 +55,12 @@ $config = [
         'user' => [
             'identityClass' => \app\models\User::class,
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name' => '_identity',
+                'httpOnly' => true,
+                'secure' => true,
+                'sameSite' => \yii\web\Cookie::SAME_SITE_LAX,
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

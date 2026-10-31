@@ -34,6 +34,28 @@ class ReportPublication extends ActiveRecord
         'other' => 'ในฐานข้อมูลอื่นๆ',
     ];
 
+    /**
+     * ชื่อช่องภาษาไทยสำหรับข้อความ error (ทั้งตอน validate ฝั่งเซิร์ฟเวอร์และ JS ฝั่ง client) — ให้ผู้ใช้รู้ว่า
+     * error นั้นเป็นของข้อไหน ไม่ใช่ชื่อคอลัมน์ภาษาอังกฤษ
+     */
+    public function attributeLabels()
+    {
+        return [
+            'article_title' => 'ชื่อบทความวิจัย',
+            'journal_name' => 'ชื่อวารสาร',
+            'issue' => 'ฉบับที่',
+            'page' => 'หน้าที่',
+            'pub_month' => 'เดือนที่ตีพิมพ์',
+            'pub_year' => 'ปีที่ตีพิมพ์',
+            'doi' => 'DOI',
+            'level' => 'ระดับ',
+            'db_type' => 'ฐานข้อมูล',
+            'db_other' => 'ฐานข้อมูลอื่นๆ',
+            'quartile' => 'Quartile / กลุ่มที่',
+            'impact_factor' => 'Impact Factor',
+        ];
+    }
+
     public static function tableName()
     {
         return '{{%report_publications}}';

@@ -66,6 +66,7 @@ $this->registerJsFile('@web/js/vendor/flatpickr.min.js');
 $this->registerJsFile('@web/js/thai-date-input.js' . $assetVersion('js/thai-date-input.js'));
 $this->registerJsFile('@web/js/report-preview.js' . $assetVersion('js/report-preview.js'), ['depends' => [\yii\web\JqueryAsset::class]]);
 $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-size-check.js'));
+$this->registerJsFile('@web/js/report-validate.js' . $assetVersion('js/report-validate.js'), ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
 <div class="report-create">
     <h1 class="h4 fw-bold mb-1"><?= Html::encode($this->title) ?></h1>
@@ -163,9 +164,17 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
         <div class="card-body">
             <?php $form = ActiveForm::begin([
                 'id' => 'progress-report-form',
+                // เลื่อนไปหากล่องสรุป error เองใน report-validate.js (ไม่ใช้การเลื่อนไปช่องแรกของ yii.activeForm.js)
+                'scrollToError' => false,
+                // ค่าเริ่มต้นของ bootstrap5 ActiveForm ใช้ selector '.alert.alert-danger' เป็นกล่องสรุป error ของ Yii —
+                // ทำให้ yii.activeForm.js เขียนทับ/ซ่อนทุกกล่อง alert แดงในฟอร์มตอนกดส่ง (รวมกล่องสรุปของเราและ
+                // ข้อความเตือน "สำคัญ" ด้านบน) — ชี้ไปที่ class ที่ไม่มีอยู่จริงเพื่อปิดพฤติกรรมนี้
+                // เพราะเรามีกล่องสรุป (#report-error-summary) ของเราเองใน report-validate.js
+                'errorSummaryCssClass' => 'yii-error-summary-disabled',
                 'options' => [
                     'enctype' => 'multipart/form-data',
                     'data-max-upload-bytes' => \app\controllers\ReportController::MAX_UPLOAD_BYTES,
+                    'data-max-post-bytes' => (int) ini_parse_quantity((string) ini_get('post_max_size')),
                 ],
             ]); ?>
 
@@ -406,6 +415,44 @@ $this->registerJsFile('@web/js/upload-size-check.js' . $assetVersion('js/upload-
                 <div class="form-text">แนบไฟล์ PDF ได้หลายไฟล์ (ไม่เกิน 10 ไฟล์ ไฟล์ละไม่เกิน <?= (int) (\app\controllers\ReportController::MAX_UPLOAD_BYTES / 1048576) ?>MB — ถ้าไฟล์ใหญ่กว่านี้ระบบจะแจ้งเตือนและไม่รับไฟล์นั้น) — ถ้าฟอร์มส่งไม่ผ่านต้องเลือกไฟล์แนบใหม่อีกครั้ง (ข้อจำกัดของเบราว์เซอร์)</div>
             </div>
             </div><!-- /#report-form-fields -->
+
+            <?php
+            // สรุป error ที่เซิร์ฟเวอร์ตรวจเจอตอนส่งแล้วไม่ผ่าน (กรณีส่งโดยข้าม JS หรือเงื่อนไขที่เช็คได้เฉพาะฝั่งเซิร์ฟเวอร์)
+            // — ตอนกดส่งปกติ report-validate.js จะเขียนทับกล่องเดียวกันนี้ด้วยผลตรวจฝั่ง client
+            $serverErrorItems = [];
+            foreach ($model->getErrors() as $messages) {
+                foreach ($messages as $message) {
+                    $serverErrorItems[] = $message;
+                }
+            }
+            foreach ($publications as $i => $pub) {
+                foreach ($pub->getErrors() as $messages) {
+                    foreach ($messages as $message) {
+                        $serverErrorItems[] = 'ผลงานที่ 6.1.' . ($i + 1) . ': ' . $message;
+                    }
+                }
+            }
+            foreach ($ipFilings as $i => $ip) {
+                foreach ($ip->getErrors() as $messages) {
+                    foreach ($messages as $message) {
+                        $serverErrorItems[] = 'รายการที่ 6.2.' . ($i + 1) . ': ' . $message;
+                    }
+                }
+            }
+            foreach ($attachmentErrors as $message) {
+                $serverErrorItems[] = $message;
+            }
+            ?>
+            <div id="report-error-summary" class="alert alert-danger mt-4<?= $serverErrorItems ? '' : ' d-none' ?>" role="alert">
+                <?php if ($serverErrorItems): ?>
+                    <div class="fw-bold mb-1">ยังส่งรายงานไม่ได้ — พบข้อผิดพลาด <?= count($serverErrorItems) ?> รายการ กรุณาแก้ไขแล้วกด "ส่งรายงาน" อีกครั้ง</div>
+                    <ul class="mb-0 ps-3">
+                        <?php foreach ($serverErrorItems as $message): ?>
+                            <li><?= Html::encode($message) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
 
             <div class="d-grid mt-4">
                 <?= Html::submitButton('ส่งรายงาน', ['class' => 'btn btn-primary btn-lg']) ?>

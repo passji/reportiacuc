@@ -119,6 +119,11 @@
         var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         $form.on('beforeSubmit', function () {
+            // ถ้า report-validate.js ตรวจเจอข้อผิดพลาดที่ Yii ไม่รู้จัก (วันที่/ไฟล์แนบ/ความยาวช่องในแถวผลงาน)
+            // ห้ามเปิดหน้าตรวจสอบ — กล่องสรุป error ถูกแสดงไว้แล้ว ให้ผู้ใช้แก้ก่อน
+            if (window.ReportValidate && window.ReportValidate.hasExtraErrors()) {
+                return false;
+            }
             buildPreviewRecap();
             resetCertifyCheckboxes();
             modal.show();

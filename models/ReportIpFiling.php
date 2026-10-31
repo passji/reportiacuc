@@ -21,6 +21,20 @@ class ReportIpFiling extends ActiveRecord
         'copyright' => 'ลิขสิทธิ์',
     ];
 
+    /**
+     * ชื่อช่องภาษาไทยสำหรับข้อความ error (ทั้งตอน validate ฝั่งเซิร์ฟเวอร์และ JS ฝั่ง client) — ให้ผู้ใช้รู้ว่า
+     * error นั้นเป็นของข้อไหน ไม่ใช่ชื่อคอลัมน์ภาษาอังกฤษ
+     */
+    public function attributeLabels()
+    {
+        return [
+            'ip_type' => 'ประเภททรัพย์สินทางปัญญา',
+            'filed_date' => 'วันที่ยื่นจด',
+            'registration_no' => 'เลขที่จดทะเบียน',
+            'asset_name' => 'ชื่อทรัพย์สิน',
+        ];
+    }
+
     public static function tableName()
     {
         return '{{%report_ip_filings}}';

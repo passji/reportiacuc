@@ -349,8 +349,15 @@ class ReportController extends SecureController
                     if ($model->id) {
                         FileHelper::removeDirectory(Yii::getAlias('@app/uploads/reports/' . (int) $model->id));
                     }
-                    Yii::error((string) $e, __METHOD__);
-                    Yii::$app->session->setFlash('error', 'เกิดข้อผิดพลาดขณะบันทึกรายงาน กรุณาลองใหม่อีกครั้ง');
+                    // รหัสอ้างอิงให้ผู้ใช้แจ้งแอดมินได้ แล้วค้นสาเหตุจริงใน runtime/logs/app.log ด้วยรหัสนี้
+                    // (ข้อความ exception อาจมี SQL/path ภายในจึงไม่แสดงให้ผู้ใช้ทั่วไป — แสดงเฉพาะแอดมิน)
+                    $errorRef = date('ymd-His') . '-' . substr(bin2hex(random_bytes(2)), 0, 4);
+                    Yii::error(sprintf('[ref %s] oid=%s user=%s %s', $errorRef, $oid, Yii::$app->session->get('sso_email'), (string) $e), __METHOD__);
+                    $message = 'เกิดข้อผิดพลาดขณะบันทึกรายงาน กรุณาลองใหม่อีกครั้ง (รหัสอ้างอิง ' . $errorRef . ')';
+                    if (Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'))) {
+                        $message .= ' — สาเหตุ (แสดงเฉพาะผู้ดูแลระบบ): ' . get_class($e) . ': ' . mb_substr($e->getMessage(), 0, 300);
+                    }
+                    Yii::$app->session->setFlash('error', $message);
                 }
             }
         }

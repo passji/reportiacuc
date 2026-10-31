@@ -42,6 +42,16 @@ $config = [
                 'samesite' => 'Lax',
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'yii' => [
+                    'class' => \app\components\ThaiYiiMessageSource::class,
+                    'basePath' => '@yii/messages',
+                    'sourceLanguage' => 'en-US',
+                    'forceTranslation' => true,
+                ],
+            ],
+        ],
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],

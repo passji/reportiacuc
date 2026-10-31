@@ -16,7 +16,7 @@ use yii\bootstrap5\LinkPager;
 
 $isAdmin = Admin::isEmailAdmin((string) Yii::$app->session->get('sso_email'));
 
-$this->title = 'ประวัติการรายงานความก้าวหน้า — ' . $project->oid;
+$this->title = 'ประวัติการรายงานความก้าวหน้า — ' . ($project->getProjectCode() ?: $project->oid);
 $this->params['breadcrumbs'][] = $this->title;
 
 $statusLabels = [
@@ -38,7 +38,7 @@ $reviewIcons = [
 // รหัสโครงการ (เช่น "จส.มข. 7/61") เป็นข้อมูลที่ผู้ใช้กรอกเองตอนส่งรายงาน อยู่ใน
 // progress_reports ไม่ใช่ oid ภายในของเรา — ดึงจากรายงานฉบับล่าสุด ($reports เรียง
 // created_at DESC มาแล้วจาก actionOid())
-$projectCode = $reports[0]->project_code ?? null;
+$projectCode = $project->getProjectCode() ?: ($reports[0]->project_code ?? null);
 
 $fields = [
     'oname' => 'ชื่อโครงการ (ไทย)',
@@ -169,6 +169,7 @@ $hasSecondGroup = $animalGroups['has_second_group'] || $secondMale !== null || $
                 <table class="table table-sm mb-0">
                     <thead>
                     <tr>
+                        <th>เลขที่โครงการ</th>
                         <th>วันที่ส่ง</th>
                         <th>สถานะโครงการ ณ ตอนรายงาน</th>
                         <th>ส่งโดย</th>
@@ -181,6 +182,7 @@ $hasSecondGroup = $animalGroups['has_second_group'] || $secondMale !== null || $
                     <?php foreach ($reports as $report): ?>
                         <?php $reviewIcon = $reviewIcons[$report->review_status] ?? $reviewIcons['pending']; ?>
                         <tr>
+                            <td><?= Html::encode($report->project_code ?: '-') ?></td>
                             <td><?= Html::encode(ThaiDate::format($report->created_at)) ?></td>
                             <td><?= Html::encode($statusLabels[$report->status] ?? $report->status) ?></td>
                             <td><?= Html::encode($report->submitted_by_email) ?></td>

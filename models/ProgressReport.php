@@ -74,6 +74,51 @@ class ProgressReport extends ActiveRecord
         'rejected' => 'bg-danger',
     ];
 
+    /**
+     * ชื่อช่องภาษาไทยสำหรับข้อความ error (ทั้งตอน validate ฝั่งเซิร์ฟเวอร์และ JS ฝั่ง client) — ให้ผู้ใช้รู้ว่า
+     * error นั้นเป็นของข้อไหน ไม่ใช่ชื่อคอลัมน์ภาษาอังกฤษ
+     */
+    public function attributeLabels()
+    {
+        return [
+            'oid' => 'ลำดับที่ (oid)',
+            'project_code' => 'ข้อ 1: เลขที่โครงการ',
+            'meeting_ref' => 'วันที่พิจารณา',
+            'pi_name' => 'ข้อ 2: ชื่อหัวหน้าโครงการ',
+            'project_name_th' => 'ข้อ 3: ชื่อโครงการ (ภาษาไทย)',
+            'project_name_en' => 'ข้อ 4: ชื่อโครงการ (ภาษาอังกฤษ)',
+            'objective_changed' => 'ข้อ 1: การเปลี่ยนแปลงวัตถุประสงค์ของโครงการ',
+            'objective_change_detail' => 'รายละเอียดการเปลี่ยนแปลงวัตถุประสงค์',
+            'status' => 'ข้อ 2: สถานะการดำเนินโครงการ',
+            'expected_start_date' => 'วันที่คาดว่าจะเริ่มดำเนินการ',
+            'expected_complete_date' => 'วันที่คาดว่าจะเสร็จสิ้น',
+            'completed_date' => 'วันที่ดำเนินการเสร็จสิ้น',
+            'stop_reason' => 'เหตุผลที่ยังไม่เริ่มดำเนินการ/ยุติ/ยกเลิกโครงการ',
+            'animal_requested_male' => 'ข้อ 3.1: จำนวนสัตว์ที่ได้รับอนุมัติ (ตัวผู้)',
+            'animal_requested_female' => 'ข้อ 3.1: จำนวนสัตว์ที่ได้รับอนุมัติ (ตัวเมีย)',
+            'animal_requested_note' => 'ข้อ 3.1: หมายเหตุสัตว์ที่ได้รับอนุมัติ',
+            'animal_used_male' => 'ข้อ 3.2: จำนวนสัตว์ที่ใช้จริง (ตัวผู้)',
+            'animal_used_female' => 'ข้อ 3.2: จำนวนสัตว์ที่ใช้จริง (ตัวเมีย)',
+            'animal_used_unit' => 'ข้อ 3.2: หน่วยของจำนวนสัตว์ที่ใช้จริง',
+            'animal_used_note' => 'ข้อ 3.2: หมายเหตุจำนวนสัตว์ที่ใช้จริง',
+            'method_changed' => 'ข้อ 4.1: การเปลี่ยนแปลงวิธีการทดลอง',
+            'method_change_detail' => 'รายละเอียดการเปลี่ยนแปลงวิธีการทดลอง',
+            'post_study_handling' => 'ข้อ 4.2: การปฏิบัติต่อสัตว์หลังเสร็จสิ้นโครงการ',
+            'post_study_handling_detail' => 'รายละเอียดการเปลี่ยนแปลงวิธีปฏิบัติต่อสัตว์',
+            'adverse_event' => 'ข้อ 4.3: เหตุการณ์ไม่พึงประสงค์',
+            'adverse_event_detail' => 'รายละเอียดเหตุการณ์ไม่พึงประสงค์',
+            'personnel_changed' => 'ข้อ 4.4: การเปลี่ยนแปลงผู้ปฏิบัติงาน',
+            'personnel_change_detail' => 'รายละเอียดการเปลี่ยนแปลงผู้ปฏิบัติงาน',
+            'alt_method_found' => 'ข้อ 4.5: วิธีการทดแทนการใช้สัตว์ทดลอง',
+            'alt_method_detail' => 'รายละเอียดวิธีการทดแทน',
+            'study_summary' => 'ข้อ 5: สรุปผลการดำเนินงาน',
+            'has_publication' => 'ข้อ 6: การตีพิมพ์ เผยแพร่ หรือนำไปใช้ประโยชน์',
+            'submitted_by_email' => 'อีเมลผู้ส่งรายงาน',
+            'rejection_reason' => 'เหตุผลที่ปฏิเสธ',
+            'reviewed_by' => 'ผู้ตรวจสอบ',
+        ];
+    }
+
     public static function tableName()
     {
         return '{{%progress_reports}}';
